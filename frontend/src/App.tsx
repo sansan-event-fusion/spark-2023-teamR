@@ -1,7 +1,11 @@
-import React from "react";
+import { Box } from "@chakra-ui/react";
 
 function App() {
-  return <h1>Hello RRR World !</h1>;
+  return (
+    <main>
+      <h1>Hello RRR World !</h1>
+    </main>
+  );
 }
 
 export default App;

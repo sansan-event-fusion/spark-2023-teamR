@@ -1,21 +1,37 @@
 ## ブランチ
 
-- main
-- develop
-- front-develop, back-develop
+1~3は恒常、4は必要に応じて
+1. main
+1. develop
+1. front-develop, back-develop
+1. 各機能ブランチ
+- front/(目的)/(任意の名前)
+- back/(目的)/(任意の名前)
 
-フロントエンドとバックエンドはそれぞれ front-develop, back-develop から切ってここに push
-いい感じになり次第（実装が固まり次第）、develop に push
-さらに良さそうであれば main に push
+目的例  
+- feature, 機能開発  
+- fix, バグ修正
+- refactor, リファクタリング
 
-※ push する時は、slack などで共有する
+Ex. back/feature/login-button  
 
-## ブランチ名
+(機能をスラッシュで区切らない)  
+NG例  
+back/feature/login/Button  
+back/feature/login  
 
-[front or back]/任意の名前
+OK例
+back/feature/login-Button  
+back/feature/login  
 
-（Issue を参考に命名）
+###　進め方
+各機能ブランチに機能を実装し push する    
+各機能ブランチにまとまった実装ができれば、front-develop, back-develop にプルリクエスト  
+front-develop, back-develop にまとまった実装ができれば、develop にプルリクエスト  
+
+※ PR する時は、slack などで共有する->GitHub の push や PR などの通知が Slack に流れるようにしてもいいかも
 
 ## Issue
 
-front か back かの Label をつける
+(必須)front か back かの Label をつける   
+(任意)作業目的のLabelをつける  

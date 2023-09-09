@@ -36,7 +36,14 @@ class Company(models.Model):
 
 
 class CustomUser(AbstractUser):
-    pass
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    count_comment = models.IntegerField(default=0)
+    count_emotions = models.IntegerField(default=0)
+    date_joined = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.username} [{self.company}, {self.position}]"
 
 
 class Folder(models.Model):

@@ -15,6 +15,7 @@ class Position(models.Model):
         max_length=20,
         choices=PositionChoices.choices,
         default=PositionChoices.POSITION_NEW_GRADUATE,
+        unique=True,
     )
 
     def __str__(self):
@@ -22,7 +23,7 @@ class Position(models.Model):
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
 
     def __str__(self):

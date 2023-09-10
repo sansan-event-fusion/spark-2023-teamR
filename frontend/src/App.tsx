@@ -1,9 +1,10 @@
-import { Box } from "@chakra-ui/react";
+import LeftPlacement from "./component/LeftPlacement";
 
 function App() {
   return (
     <main>
-      <h1>Hello RRR World !</h1>
+      {/* テスト用 */}
+      <LeftPlacement />
     </main>
   );
 }

@@ -18,7 +18,7 @@ const smallProfile = ({ isOpen, img, name, position }: Props) => {
           mr="2"
           bg="white"
           boxShadow="none"
-          _hover={{ boxShadow: "md" }}
+          _hover={{ bg: "blue.200" }}
         >
           <Flex>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">

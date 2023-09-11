@@ -44,7 +44,7 @@ class CustomUser(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"username: {self.username}, company: {self.company_id.name}, position: {self.position_id.position}]"
+        return f"username: {self.username}, company: {self.company_id.name}, position: {self.position_id.position}"
 
 
 class Folder(models.Model):
@@ -55,7 +55,7 @@ class Folder(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="folder_receiver_id"
     )
     title = models.CharField(max_length=100)
-    vision = models.CharField(max_length=400, blank=True, default="")
+    vision = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"title: {self.title}, vision: {self.vision}"
@@ -71,11 +71,11 @@ class Task(models.Model):
     folder_id = models.ForeignKey(Folder, on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     # タスクの内容
-    content = models.CharField(max_length=400)
+    content = models.TextField()
     # タスクを割り当てられた人が個人的に記入できるメモ
-    memo = models.CharField(max_length=800, blank=True, default="")
+    memo = models.TextField(null=True, blank=True)
     is_finished = models.BooleanField(default=False)
-    deadline = models.DateTimeField()
+    deadline = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     finished_at = models.DateTimeField(auto_now=True)
 
@@ -86,7 +86,6 @@ class Task(models.Model):
 class Emotion(models.Model):
     # Enum で Emotion を 6 段階にする
     class EmotionChoices(models.TextChoices):
-        EMOTION_NONE = "none"
         EMOTION_GOOD = "good"
         EMOTION_EXCELLENT = "excellent"
         EMOTION_SAD = "sad"
@@ -96,10 +95,9 @@ class Emotion(models.Model):
 
     sender_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
-    type = models.CharField(
+    emotion_type = models.CharField(
         max_length=20,
         choices=EmotionChoices.choices,
-        default=EmotionChoices.EMOTION_NONE,
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

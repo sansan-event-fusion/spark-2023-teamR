@@ -25,8 +25,9 @@ erDiagram
     User {
         Char name
         Password password
-        ForeignKey company
-        ForeignKey position
+        Email email
+        ForeignKey company_id
+        ForeignKey position_id
         Integer count_comment
         Integer count_emotions
         DateTime date_joined
@@ -41,6 +42,10 @@ erDiagram
         ForeignKey receiver_id
         Char title
         Text vision
+        Enum status
+        DateTime created_at
+        DateTime updated_at
+        DateTime finished_at
     }
 
     Task {
@@ -50,22 +55,24 @@ erDiagram
         Char title
         Text content
         Text memo
-        Boolean is_finished 
+        Enum status
+        DateTime deadline
         DateTime created_at
+        DateTime updated_at
         DateTime finished_at   
     }
 
     Comment {
         ForeignKey task_id
         ForeignKey sender_id
-        Text Comment
+        Text content
         DateTime created_at
     }
 
     Emotion {
         ForeignKey sender_id
         ForeignKey task_id
-        Enum type
+        Enum emotion_type
         DateTime created_at
     }
 ```

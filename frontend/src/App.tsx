@@ -1,11 +1,13 @@
-import { Box } from "@chakra-ui/react";
+import { AuthProvider } from "./AuthContext";
 
-function App() {
+const App = () => {
   return (
-    <main>
-      <h1>Hello RRR World !</h1>
-    </main>
+    <AuthProvider>
+      <main>
+        <h1>Hello RRR World !</h1>
+      </main>
+    </AuthProvider>
   );
-}
+};
 
-export default App;
+export { App };

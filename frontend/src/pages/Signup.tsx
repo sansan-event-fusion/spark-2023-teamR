@@ -132,7 +132,7 @@ const Signup = () => {
               <FormLabel htmlFor="user_password" fontSize="sm">
                 パスワード
               </FormLabel>
-              <InputGroup size="md">
+              <InputGroup>
                 <Input
                   id="user_password"
                   size="sm"
@@ -178,7 +178,7 @@ const Signup = () => {
               <FormLabel htmlFor="user_passwordConfirm" fontSize="sm">
                 確認パスワード
               </FormLabel>
-              <InputGroup size="md">
+              <InputGroup>
                 <Input
                   id="user_passwordConfirm"
                   size="sm"

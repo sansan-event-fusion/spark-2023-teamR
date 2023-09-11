@@ -37,6 +37,7 @@ class Company(models.Model):
 
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
     company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
     position_id = models.ForeignKey(Position, on_delete=models.CASCADE)
     count_comment = models.IntegerField(default=0)

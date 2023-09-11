@@ -21,10 +21,10 @@ def signup_view(request):
 class FolderViewSet(viewsets.ModelViewSet):
     queryset = Folder.objects.all()
     serializer_class = FolderSerializer
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Folder.objects.filter(
             receiver_id=self.request.user.id
-        )
+        ).order_by("-created_at")
+        return queryset

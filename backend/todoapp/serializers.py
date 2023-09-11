@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import check_password
 from .models import CustomUser, Company
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class SignUpSerializer(serializers.ModelSerializer):
     company_name = serializers.CharField(write_only=True)
     company_password = serializers.CharField(write_only=True)
 

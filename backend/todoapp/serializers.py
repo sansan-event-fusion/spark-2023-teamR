@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.hashers import check_password
 from .models import CustomUser, Company
 
 
@@ -18,9 +18,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "company_name",
             "company_password",
         )
-
-    def validate_password(self, value: str) -> str:
-        return make_password(value)
 
     def create(self, validated_data):
         company_name = validated_data.pop("company_name")

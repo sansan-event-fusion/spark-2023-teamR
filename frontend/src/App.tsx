@@ -1,11 +1,10 @@
 import { AuthProvider } from "./AuthContext";
+import { Login } from "./pages/Login";
 
 const App = () => {
   return (
     <AuthProvider>
-      <main>
-        <h1>Hello RRR World !</h1>
-      </main>
+      <Login />
     </AuthProvider>
   );
 };

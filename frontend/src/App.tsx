@@ -1,7 +1,12 @@
-import React from "react";
+import { AuthProvider } from "./AuthContext";
+import { Login } from "./pages/Login";
 
-function App() {
-  return <h1>Hello RRR World !</h1>;
-}
+const App = () => {
+  return (
+    <AuthProvider>
+      <Login />
+    </AuthProvider>
+  );
+};
 
-export default App;
+export { App };

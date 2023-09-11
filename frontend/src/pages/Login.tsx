@@ -40,6 +40,9 @@ const Login = () => {
       </FormControl>
 
       <Button onClick={onClickLogin}>ログイン</Button>
+
+      <Text>新規登録はこちら</Text>
+      <Button onClick={() => navigate("/signup")}>新規登録</Button>
     </Card>
   );
 };

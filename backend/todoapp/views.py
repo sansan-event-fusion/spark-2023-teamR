@@ -12,6 +12,8 @@ def signup_view(request):
     elif request.method == 'POST':
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            user.set_password(request.data['password'])
+            user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

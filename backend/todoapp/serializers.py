@@ -22,8 +22,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         company_name = validated_data.pop("company_name")
         company_password = validated_data.pop("company_password")
+        email = validated_data.pop("email")
 
         try:
+            if CustomUser.objects.filter(email=email).exists():
+                raise serializers.ValidationError("Email already exists.")
+
             company = Company.objects.get(name=company_name)
             if not check_password(company_password, company.password):
                 raise serializers.ValidationError("Company password does not match.")

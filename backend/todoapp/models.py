@@ -108,7 +108,7 @@ class Emotion(models.Model):
 class Comment(models.Model):
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
     sender_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    content = models.CharField(max_length=400)
+    content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

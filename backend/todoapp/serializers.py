@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from .models import CustomUser, Company
 
 
@@ -14,7 +14,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "username",
             "password",
             "email",
-            "company_id",
             "position_id",
             "company_name",
             "company_password",
@@ -29,7 +28,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
         try:
             company = Company.objects.get(name=company_name)
-            if not company.password == make_password(company_password):
+            if not check_password(company_password, company.password):
                 raise serializers.ValidationError("Company password does not match.")
             validated_data["company_id"] = company
         except Company.DoesNotExist:

@@ -4,12 +4,17 @@ import { useContext } from "react";
 type Auth = {
   userId: string;
 };
+type AuthContextType = {
+  auth: Auth;
+  setAuth: React.Dispatch<React.SetStateAction<Auth>>;
+};
 
 const LoginContext = React.createContext<boolean>(false);
 
-const AuthContext = React.createContext<
-  [Auth, React.Dispatch<React.SetStateAction<Auth>>]
->([{ userId: "" }, () => {}]);
+const AuthContext = React.createContext<AuthContextType>({
+  auth: { userId: "" },
+  setAuth: () => {},
+});
 
 const useAuth = () => {
   return useContext(AuthContext);
@@ -29,7 +34,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <LoginContext.Provider value={login}>
-      <AuthContext.Provider value={[auth, setAuth]}>
+      <AuthContext.Provider value={{ auth, setAuth }}>
         {children}
       </AuthContext.Provider>
     </LoginContext.Provider>

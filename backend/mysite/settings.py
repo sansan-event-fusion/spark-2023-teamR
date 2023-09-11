@@ -136,3 +136,4 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+AUTHENTICATION_BACKENDS = ['todoapp.backends.EmailBackend']

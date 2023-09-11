@@ -34,3 +34,12 @@ class SignUpSerializer(serializers.ModelSerializer):
 
         user = CustomUser.objects.create(**validated_data)
         return user
+class LoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = CustomUser
+        fields = ["email","password"]
+
+class LogoutSerializer(serializers.ModelSerializer):
+    pass

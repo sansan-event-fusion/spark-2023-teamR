@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.hashers import check_password
-from .models import CustomUser, Company
+from .models import *
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -37,3 +37,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
         user = CustomUser.objects.create(**validated_data)
         return user
+
+
+class FolderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
+        fields = (
+            "id",
+            "sender_id",
+            "receiver_id",
+            "title",
+            "vision",
+        )

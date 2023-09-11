@@ -9,6 +9,7 @@ import {
   FormErrorMessage,
   Container,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 
 //自動ログイン機能は後で実装
@@ -20,6 +21,7 @@ type formInputs = {
 
 const Login = () => {
   const navigate = useNavigate();
+  const toast = useToast();
 
   const {
     handleSubmit,
@@ -29,6 +31,14 @@ const Login = () => {
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
+    toast({
+      title: "ログインしました",
+      status: "success",
+      position: "top",
+      colorScheme: "blue",
+      duration: 3000,
+      isClosable: true,
+    });
     onClickLogin();
   });
 

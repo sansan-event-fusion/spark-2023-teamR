@@ -38,7 +38,7 @@ def signin_view(request):
         login(request, user)
         # ここ何を返す？
         return JsonResponse(
-            data={"url": "redirect to succcess page"}
+            data={"url": "redirect to succcess page"},
             status=status.HTTP_200_OK,
         )
 

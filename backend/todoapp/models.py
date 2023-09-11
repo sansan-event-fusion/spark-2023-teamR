@@ -47,6 +47,11 @@ class CustomUser(AbstractUser):
         return f"username: {self.username}, company: {self.company_id.name}, position: {self.position_id.position}"
 
 
+class StatusChoices(models.TextChoices):
+    STATUS_TODO = "todo"
+    STATUS_DOING = "doing"
+    STATUS_DONE = "done"
+
 class Folder(models.Model):
     sender_id = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="folder_sender_id"
@@ -56,6 +61,14 @@ class Folder(models.Model):
     )
     title = models.CharField(max_length=100)
     vision = models.TextField(blank=True, null=True)
+    status = models.CharField(
+        max_length=20,
+        choices=StatusChoices.choices,
+        default=StatusChoices.STATUS_TODO,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    finished_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"title: {self.title}, vision: {self.vision}"
@@ -74,9 +87,14 @@ class Task(models.Model):
     content = models.TextField()
     # タスクを割り当てられた人が個人的に記入できるメモ
     memo = models.TextField(null=True, blank=True)
-    is_finished = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=20,
+        choices=StatusChoices.choices,
+        default=StatusChoices.STATUS_TODO,
+    )
     deadline = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     finished_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

@@ -9,9 +9,6 @@ class EmailBackend(ModelBackend):
         except UserModel.DoesNotExist:
             return None
         else:
-            print("check!!", password==user.password)
-            # passwordが平文保存の場合
-            # if user.password == password:
             if user.check_password(password):
                 return user
         return None

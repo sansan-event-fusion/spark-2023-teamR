@@ -15,34 +15,38 @@ def signup_view(request):
     elif request.method == 'POST':
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            user.set_password(request.data['password'])
+            user.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signin_view(request):
-    # todo request bodyをemailとpasswordに限定できる？
-    # todo パスワードハッシュ化して保存を確認
     serializer = LoginSerializer(data=request.data)
     is_valid=serializer.is_valid(raise_exception=True)
     email = serializer.validated_data.get("email")
     password = serializer.validated_data.get("password")
     user = authenticate(request, email=email, password=password)
-    if not user:
+    if user is None:
         return JsonResponse(
             data={"msg": "either email or password is incorrect"},
             status=status.HTTP_400_BAD_REQUEST,
         )
     else:
         login(request, user)
-        #ここは何を返すべき？
-        # 公式によると↓
-        # Redirect to a success page.
-        return JsonResponse(data={"role": "hoge"})
+        # ここ何を返す？
+        return JsonResponse(
+            data={"url": "redirect to succcess page"}
+            status=status.HTTP_200_OK,
+        )
 
 
 @permission_classes([AllowAny])
 def signout_view(request):
     logout(request)
-    return JsonResponse(data={"role": "none"})
+    return JsonResponse(
+        data={"role": "none"},
+        status=status.HTTP_200_OK,
+    )

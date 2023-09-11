@@ -22,7 +22,8 @@ def signup_view(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def signin_view(request):
-    print("requestdata", request.data)
+    # todo request bodyをemailとpasswordに限定できる？
+    # todo パスワードハッシュ化して保存を確認
     serializer = LoginSerializer(data=request.data)
     is_valid=serializer.is_valid(raise_exception=True)
     email = serializer.validated_data.get("email")
@@ -30,14 +31,18 @@ def signin_view(request):
     user = authenticate(request, email=email, password=password)
     if not user:
         return JsonResponse(
-            data={"msg": "either employee number or password is incorrect"},
+            data={"msg": "either email or password is incorrect"},
             status=status.HTTP_400_BAD_REQUEST,
         )
     else:
         login(request, user)
+        #ここは何を返すべき？
+        # 公式によると↓
+        # Redirect to a success page.
         return JsonResponse(data={"role": "hoge"})
 
-# @action(methods=["POST"], detail=False)
-# def logout(self, request):
-#     logout(request)
-#     return HttpResponse()
+
+@permission_classes([AllowAny])
+def signout_view(request):
+    logout(request)
+    return JsonResponse(data={"role": "none"})

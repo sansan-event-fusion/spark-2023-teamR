@@ -25,11 +25,12 @@ class SignUpSerializer(serializers.ModelSerializer):
 
         try:
             company = Company.objects.get(name=company_name)
-            if not check_password(company_password, company.password):
-                raise serializers.ValidationError("Company password does not match.")
-            validated_data["company_id"] = company
         except Company.DoesNotExist:
             raise serializers.ValidationError("Company does not exist.")
+
+        if not check_password(company_password, company.password):
+            raise serializers.ValidationError("Company password does not match.")
+        validated_data["company_id"] = company
 
         user = CustomUser.objects.create(**validated_data)
         return user

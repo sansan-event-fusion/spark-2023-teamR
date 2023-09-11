@@ -11,12 +11,14 @@ import {
   Box,
   useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 type formInputs = {
-  user_name: string;
-  user_address: string;
-  user_password: string;
-  company_id: string;
+  username: string;
+  email: string;
+  password: string;
+  position_id: number;
+  company_name: string;
   company_password: string;
 };
 
@@ -30,17 +32,41 @@ const Signup = () => {
     formState: { errors, isSubmitting },
   } = useForm<formInputs>();
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    toast({
-      title: "登録しました",
-      status: "success",
-      position: "top",
-      colorScheme: "blue",
-      duration: 3000,
-      isClosable: true,
-    });
-    navigate("/login");
+  const onSubmit = handleSubmit(async (data) => {
+    const authStatus = await axios
+      .post<formInputs>("http://127.0.0.1:8000/api/signup/", {
+        username: data.username,
+        password: data.password,
+        email: data.email,
+        position_id: data.position_id,
+        company_name: data.company_name,
+        company_password: data.company_password,
+      })
+      //   .then(() => navigate("/login"))
+      .then(() => {
+        toast({
+          title: "登録しました",
+          status: "success",
+          position: "top",
+          colorScheme: "blue",
+          duration: 3000,
+          isClosable: true,
+        });
+        navigate("/login");
+      })
+      .catch((error) => {
+        toast({
+          title: "登録に失敗しました",
+          status: "error",
+          position: "top",
+          colorScheme: "red",
+          duration: 3000,
+          isClosable: true,
+        });
+        console.log(error.response);
+      });
+    console.log("POSTしたデータ:", data);
+    console.log("axiosのデータ: ", authStatus);
   });
 
   return (
@@ -60,12 +86,12 @@ const Signup = () => {
         <form onSubmit={onSubmit}>
           <Box width="sm" paddingY={6} textAlign={"center"}>
             {/* ユーザー名 */}
-            <FormControl isInvalid={Boolean(errors.user_name)} mb={5}>
-              <FormLabel htmlFor="name">ユーザー名</FormLabel>
+            <FormControl isInvalid={Boolean(errors.username)} mb={5}>
+              <FormLabel htmlFor="username">ユーザー名</FormLabel>
               <Input
-                id="name"
+                id="username"
                 // 必須と50文字以内のバリデーション
-                {...register("user_name", {
+                {...register("username", {
                   required: "必須項目です",
                   maxLength: {
                     value: 50,
@@ -74,16 +100,16 @@ const Signup = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.user_name && errors.user_name.message}
+                {errors.username && errors.username.message}
               </FormErrorMessage>
             </FormControl>
             {/* メールアドレス */}
-            <FormControl isInvalid={Boolean(errors.user_address)} mb={5}>
+            <FormControl isInvalid={Boolean(errors.email)} mb={5}>
               <FormLabel htmlFor="email">メールアドレス</FormLabel>
               <Input
                 id="email"
                 // 必須、50文字以内、半角英数字メールアドレス形式のバリデーション
-                {...register("user_address", {
+                {...register("email", {
                   required: "必須項目です",
                   maxLength: {
                     value: 50,
@@ -96,20 +122,42 @@ const Signup = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.user_address && errors.user_address.message}
+                {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={Boolean(errors.user_password)} mb={5}>
+            <FormControl isInvalid={Boolean(errors.password)} mb={5}>
               <FormLabel htmlFor="user_password">パスワード</FormLabel>
               <Input
-                id="user_password"
+                id="password"
                 // 必須、8文字以上、50文字以内、半角英数字のバリデーション
-                {...register("user_password", {
+                {...register("password", {
                   required: "必須項目です",
                   minLength: {
                     value: 8,
                     message: "8文字以上で入力してください",
                   },
+                  maxLength: {
+                    value: 50,
+                    message: "50文字以内で入力してください",
+                  },
+                  //   pattern: {
+                  //     value: /^[0-9a-zA-Z]*$/,
+                  //     message: "半角英数字で入力してください",
+                  //   },
+                })}
+              />
+              <FormErrorMessage>
+                {errors.password && errors.password.message}
+              </FormErrorMessage>
+            </FormControl>
+            {/* ポジションID */}
+            <FormControl isInvalid={Boolean(errors.position_id)} mb={5}>
+              <FormLabel htmlFor="position_id">ポジションID</FormLabel>
+              <Input
+                id="position_id"
+                // 必須と50文字以内のバリデーション
+                {...register("position_id", {
+                  required: "必須項目です",
                   maxLength: {
                     value: 50,
                     message: "50文字以内で入力してください",
@@ -121,25 +169,25 @@ const Signup = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.user_password && errors.user_password.message}
+                {errors.position_id && errors.position_id.message}
               </FormErrorMessage>
             </FormControl>
-            {/* 会社ID */}
-            <FormControl isInvalid={Boolean(errors.company_id)} mb={5}>
-              <FormLabel htmlFor="company_id">会社ID</FormLabel>
+            {/* 会社名 */}
+            <FormControl isInvalid={Boolean(errors.company_name)} mb={5}>
+              <FormLabel htmlFor="company_name">会社名</FormLabel>
               <Input
-                id="company_id"
+                id="company_name"
                 // 必須と50文字以内のバリデーション
-                {...register("company_id", {
+                {...register("company_name", {
                   required: "必須項目です",
-                  minLength: {
-                    value: 4,
-                    message: "4文字以上で入力してください",
+                  maxLength: {
+                    value: 50,
+                    message: "50文字以内で入力してください",
                   },
                 })}
               />
               <FormErrorMessage>
-                {errors.company_id && errors.company_id.message}
+                {errors.company_name && errors.company_name.message}
               </FormErrorMessage>
             </FormControl>
             {/* 会社パスワード */}

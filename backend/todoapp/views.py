@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from .serializers import SignUpSerializer, LoginSerializer, FolderSerializer
+from .serializers import SignUpSerializer, LoginSerializer, FolderSerializer#, CommentSerializer
 from .models import Folder
 
 
@@ -50,6 +50,42 @@ class FolderViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         folder = serializer.save(sender_id=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    task_id = self.request.query_params.get('task_id')
+    # taskの存在判定もしないといけない
+
+    def list(self, request):
+        # リクエストパラメータで指定したタスクのコメントのみ返す。
+        # 関係する人は全員見えるように
+        queryset=queryset.filter(task_id = task_id).order_by("-created_at")
+        relate_user_ids = set(queryset.values("sender_id", "receiver_id")[0].values())
+        viewer_id=self.request.user.id
+
+        if viewer_id in relate_user_ids:
+            return queryset
+        else:
+            return queryset.filter(task_id=-1) # 該当しないを返したい
+
+    def create(self, request, *args, **kwargs):
+        # user が指定したタスクにコメントを残す。
+        relate_user_ids = set(queryset.values("sender_id", "receiver_id")[0].values())
+        viewer_id=self.request.user.id
+        if viewer_id in relate_user_ids:
+            serializer = CommentSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            folder = serializer.save(sender_id=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return JsonResponse(
+            data={"msg": "you dont have accecc permissions"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+        
 
 
 @api_view(["POST"])

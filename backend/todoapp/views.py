@@ -31,15 +31,19 @@ class FolderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         query_type = self.request.query_params.get("type", None)
+        status = self.request.query_params.get("status", None)
+        queryset = Folder.objects.all()
+        if status:
+            queryset = queryset.filter(status=status)
         if query_type == "received":
-            return Folder.objects.filter(receiver_id=self.request.user).order_by(
+            queryset = queryset.filter(receiver_id=self.request.user).order_by(
                 "-created_at"
             )
         elif query_type == "sent":
-            return Folder.objects.filter(sender_id=self.request.user).order_by(
+            queryset = queryset.filter(sender_id=self.request.user).order_by(
                 "-created_at"
             )
-        return Folder.objects.none()
+        return queryset
 
     def create(self, request, *args, **kwargs):
         serializer = FolderSerializer(data=request.data)

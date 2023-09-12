@@ -7,8 +7,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Folder, Task
-from .serializers import (FolderSerializer, LoginSerializer, SignUpSerializer,
-                          TaskSerializer)
+from .serializers import (
+    FolderSerializer,
+    LoginSerializer,
+    SignUpSerializer,
+    TaskSerializer,
+)
 
 
 @api_view(["GET", "POST"])
@@ -54,29 +58,6 @@ class FolderViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def signin_view(request):
-    serializer = LoginSerializer(data=request.data)
-    is_valid = serializer.is_valid(raise_exception=True)
-    email = serializer.validated_data.get("email")
-    password = serializer.validated_data.get("password")
-    user = authenticate(request, email=email, password=password)
-    if user is None:
-        return JsonResponse(
-            data={"msg": "either email or password is incorrect"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-    else:
-        login(request, user)
-        token, created = Token.objects.get_or_create(user=user)
-
-        return JsonResponse(
-            data={"url": "redirect to succcess page", "token": token.key},
-            status=status.HTTP_200_OK,
-        )
-
-
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
@@ -99,7 +80,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(receiver_id=receiver_id)
         if folder_id:
             queryset = queryset.filter(folder_id=folder_id)
-
+        queryset = queryset.order_by("-created_at")
         return queryset
 
     def create(self, request, *args, **kwargs):
@@ -107,6 +88,29 @@ class TaskViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         task = serializer.save(sender_id=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def signin_view(request):
+    serializer = LoginSerializer(data=request.data)
+    is_valid = serializer.is_valid(raise_exception=True)
+    email = serializer.validated_data.get("email")
+    password = serializer.validated_data.get("password")
+    user = authenticate(request, email=email, password=password)
+    if user is None:
+        return JsonResponse(
+            data={"msg": "either email or password is incorrect"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    else:
+        login(request, user)
+        token, created = Token.objects.get_or_create(user=user)
+
+        return JsonResponse(
+            data={"url": "redirect to succcess page", "token": token.key},
+            status=status.HTTP_200_OK,
+        )
 
 
 @permission_classes([AllowAny])

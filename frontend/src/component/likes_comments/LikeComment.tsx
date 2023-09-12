@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+import Faces from "./Faces";
 import {
   Box,
   Text,
@@ -37,6 +38,8 @@ type Props = {
 };
 
 function LikeComment() {
+  const reactions1 = ["smile", "suprise", "kiss", "squint", "beam"];
+  const reactions2 = ["grimace", "dizzy", "hearts", "tongue", "blank"];
   const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [reactions, setReactions] = useState<number[]>([]);
@@ -133,86 +136,14 @@ function LikeComment() {
               <PopoverBody marginY="2" padding={"4"}>
                 <VStack>
                   <HStack spacing={"6"} padding={"4"}>
-                    <Button bg="none" onClick={() => handleStampClick(0)}>
-                      <FontAwesomeIcon
-                        icon={faFaceSmileWink}
-                        style={{ color: "#fbd92e" }}
-                        size="2xl"
-                        bounce
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(1)}>
-                      <FontAwesomeIcon
-                        icon={faFaceSurprise}
-                        size="2xl"
-                        spin
-                        style={{ color: "#f503f6" }}
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(2)}>
-                      <FontAwesomeIcon
-                        icon={faFaceKissWinkHeart}
-                        style={{ color: "#fe3d7f" }}
-                        beatFade
-                        size="2xl"
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(3)}>
-                      <FontAwesomeIcon
-                        icon={faFaceGrinSquintTears}
-                        shake
-                        style={{ color: "#26a3ef" }}
-                        size="2xl"
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(4)}>
-                      <FontAwesomeIcon
-                        icon={faFaceGrinBeamSweat}
-                        size="2xl"
-                        style={{ color: "#7bb241" }}
-                      />
-                    </Button>
+                    {reactions1.map((stampName) => {
+                      return <Faces stampName={stampName} />;
+                    })}
                   </HStack>
                   <HStack spacing={"6"} padding={"4"}>
-                    <Button bg="none" onClick={() => handleStampClick(5)}>
-                      <FontAwesomeIcon
-                        icon={faFaceGrimace}
-                        style={{ color: "#f1a900" }}
-                        size="2xl"
-                        bounce
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(6)}>
-                      <FontAwesomeIcon
-                        icon={faFaceDizzy}
-                        size="2xl"
-                        spin
-                        style={{ color: "#9f9f9f" }}
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(7)}>
-                      <FontAwesomeIcon
-                        icon={faFaceGrinHearts}
-                        beatFade
-                        size="2xl"
-                        style={{ color: "#ea3f79" }}
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(8)}>
-                      <FontAwesomeIcon
-                        icon={faFaceGrinTongueSquint}
-                        style={{ color: "#5d17f6" }}
-                        shake
-                        size="2xl"
-                      />
-                    </Button>
-                    <Button bg="none" onClick={() => handleStampClick(9)}>
-                      <FontAwesomeIcon
-                        icon={faFaceMehBlank}
-                        size="2xl"
-                        style={{ color: "#ad2c27" }}
-                      />
-                    </Button>
+                    {reactions2.map((stampName) => {
+                      return <Faces stampName={stampName} />;
+                    })}
                   </HStack>
                 </VStack>
               </PopoverBody>

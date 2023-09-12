@@ -56,6 +56,17 @@ class SignUpSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserInfoChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            "id",
+            "username",
+            "email",
+            "position_id",
+        )
+
+
 class FolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Folder

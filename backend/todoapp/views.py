@@ -2,11 +2,16 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from .serializers import SignUpSerializer, LoginSerializer, FolderSerializer
-from .models import Folder
+from .serializers import (
+    SignUpSerializer,
+    LoginSerializer,
+    FolderSerializer,
+    UserInfoChangeSerializer,
+)
+from .models import Folder, CustomUser
 
 
 @api_view(["GET", "POST"])
@@ -50,6 +55,35 @@ class FolderViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         folder = serializer.save(sender_id=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UserInfoChangeViewSet(
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet
+):
+    serializer_class = UserInfoChangeSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = CustomUser.objects.all()
+
+    def get_object(self):
+        return self.request.user
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer = UserInfoChangeSerializer(request.user)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        serializer = UserInfoChangeSerializer(request.user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        serializer = UserInfoChangeSerializer(
+            request.user, data=request.data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
 
 @api_view(["POST"])

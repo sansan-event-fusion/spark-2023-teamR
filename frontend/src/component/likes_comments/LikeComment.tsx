@@ -29,6 +29,7 @@ import {
   faFaceGrinTongueSquint,
 } from "@fortawesome/free-regular-svg-icons";
 
+// 表示に必要そうなデータ
 type Props = {
   taskName: string;
   taskContent: string;

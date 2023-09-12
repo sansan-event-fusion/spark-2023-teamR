@@ -35,6 +35,12 @@ const FolderContextProvider = ({ children }: { children: ReactNode }) => {
           content: "タスク2の内容",
           status: "doing",
         },
+        {
+          id: 3,
+          title: "タスク3",
+          content: "タスク3の内容",
+          status: "done",
+        },
       ],
     },
   ]);

@@ -1,100 +1,73 @@
-import { Flex, Box, Text, VStack, StackDivider } from "@chakra-ui/react";
+//1つのフォルダーの中のタスク一覧を表示するコンポーネント
+import { Flex, VStack, Text, Box } from "@chakra-ui/react";
+import { useContext } from "react";
+import { FolderContext } from "../FolderContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 
-type ButtonStates = {
-  folderName: string;
-  vision: string;
-  active: boolean;
-};
-
-type Props = {
-  buttonStates: ButtonStates[];
-};
-
-function TaskList({ buttonStates }: Props) {
+const TaskList = () => {
+  const { folders, activeFolderId } = useContext(FolderContext);
   return (
-    <Flex w="100%" mt="8" justify="center">
-      <Box w="80%">
-        <center>
-          <Text as="b" fontSize="3xl">
-            得られる力 : {buttonStates.find((button) => button.active)?.vision}
-            <br />
-          </Text>
-        </center>
-
-        <VStack
-          divider={<StackDivider borderColor="gray.300" />}
-          spacing={4}
-          mt="4"
-          align="stretch"
-        >
-          {/* 完了したタスク */}
-          <Box
-            rounded="lg"
-            border="1px solid"
-            p={4}
-            borderColor="gray.300"
-            bg="blue.300"
-          >
-            <Flex justifyContent="space-between">
-              <FontAwesomeIcon
-                size="xl"
-                icon={faCircleCheck}
-                style={{ color: "#1275ae" }}
-              />
-              <Text>タスク</Text>
-              <FontAwesomeIcon
-                size="xl"
-                icon={faCircleCheck}
-                style={{ color: "#63B3ED" }}
-              />
-            </Flex>
-          </Box>
-          {/* 実行中のタスク */}
-          <Box
-            rounded="lg"
-            border="1px solid"
-            p={4}
-            borderColor="gray.300"
-            bg="yellow.200"
-          >
-            <Flex justifyContent={"space-between"}>
-              <FontAwesomeIcon
-                icon={faPersonRunning}
-                size="xl"
-                style={{ color: "#b19218" }}
-                shake
-              />
-              <Text>タスク</Text>
-              <FontAwesomeIcon
-                size="xl"
-                icon={faCircleCheck}
-                style={{ color: "#EDDEA4" }}
-              />
-            </Flex>
-          </Box>
-          {/* 実行予定のタスク */}
-          <Box rounded="lg" border="1px solid" p={4} borderColor="gray.300">
-            <Flex justifyContent={"space-between"}>
-              <FontAwesomeIcon
-                size="xl"
-                icon={faCircleCheck}
-                style={{ color: "#d9d9d9" }}
-              />
-              <Text color="gray.400">タスク</Text>
-              <FontAwesomeIcon
-                size="xl"
-                icon={faCircleCheck}
-                style={{ color: "#E2EAF4" }}
-              />
-            </Flex>
-          </Box>
-        </VStack>
-      </Box>
-    </Flex>
+    <Box bg="blue.100" w="100%" h="100%" paddingY={6}>
+      {folders.map((folder) => (
+        <Box>
+          {activeFolderId === folder.id && (
+            <Box textAlign={"center"}>
+              <Text fontSize="3xl" p={4}>
+                {folder.vision}
+              </Text>
+              <VStack justifyContent="center" p={4}>
+                {folder.tasks.length === 0 && (
+                  <Text fontSize="2xl">タスクを追加＋</Text>
+                )}
+                {folder.tasks.map((task) => (
+                  <Box
+                    key={task.id}
+                    rounded="lg"
+                    border="1px solid gray.300"
+                    w={"70%"}
+                    paddingX={6}
+                    paddingY={4}
+                    m={2}
+                    bg={
+                      task.status === "todo"
+                        ? "white"
+                        : task.status === "doing"
+                        ? "yellow.200"
+                        : "blue.400"
+                    }
+                  >
+                    <Flex justifyContent={"space-between"}>
+                      <FontAwesomeIcon
+                        size="lg"
+                        icon={
+                          task.status === "doing"
+                            ? faPersonRunning
+                            : faCircleCheck
+                        }
+                        style={{
+                          color:
+                            task.status === "doing"
+                              ? "#F7A072"
+                              : task.status === "todo"
+                              ? "#CBD5E0"
+                              : "#1275AE",
+                        }}
+                      />
+                      <Text key={task.id} marginRight={6}>
+                        {task.title}
+                      </Text>
+                    </Flex>
+                  </Box>
+                ))}
+              </VStack>
+            </Box>
+          )}
+        </Box>
+      ))}
+    </Box>
   );
-}
+};
 
-export default TaskList;
+export { TaskList };

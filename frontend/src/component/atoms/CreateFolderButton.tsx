@@ -50,7 +50,7 @@ const CreateFolderButton = ({
       const newButtonState = {
         folderName: folderName,
         vision: vision,
-        active: false,
+        active: true,
       };
 
       const updatedButtonStates = [...buttonStates, newButtonState];

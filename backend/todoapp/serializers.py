@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 
-from .models import Company, CustomUser
+from .models import Company, CustomUser, Folder
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -54,6 +54,18 @@ class SignUpSerializer(serializers.ModelSerializer):
         validated_data.pop("password2", None)
         user = CustomUser.objects.create(**validated_data)
         return user
+
+
+class FolderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
+        fields = (
+            "id",
+            # sender_id は request.user.id にするため、ここでは取得しない
+            "receiver_id",
+            "title",
+            "vision",
+        )
 
 
 class LoginSerializer(serializers.ModelSerializer):

@@ -15,8 +15,8 @@ import {
 //自動ログイン機能は後で実装
 
 type formInputs = {
-  user_address: string;
-  user_password: string;
+  email: string;
+  password: string;
 };
 
 const Login = () => {
@@ -29,16 +29,44 @@ const Login = () => {
     formState: { errors, isSubmitting },
   } = useForm<formInputs>();
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    toast({
-      title: "ログインしました",
-      status: "success",
-      position: "top",
-      colorScheme: "blue",
-      duration: 3000,
-      isClosable: true,
+  const onSubmit = handleSubmit(async (data) => {
+    console.log("POSTするデータ：", data);
+    //curl -X POST http://127.0.0.1:8000/api/signin/ -H "Content-Type: application/json" -d '{"email": "admin@example.com", "password": "admin_password"}'{"url": "redirect to succcess page"}
+    const response = await fetch("http://127.0.0.1:8000/api/signin/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_address: data.email,
+        user_password: data.password,
+      }),
     });
+    const postedData = await response.json();
+    console.log("POSTできたデータ：", postedData);
+    //ログイン成功時の処理と失敗の処理
+    if (postedData.status === "success") {
+      toast({
+        title: "ログインしました",
+        status: "success",
+        position: "top",
+        colorScheme: "blue",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/fresherTop");
+    } else {
+      //失敗の内容をコンソールに表示
+      console.log(postedData.error.message);
+      toast({
+        title: "ログインに失敗しました",
+        status: "error",
+        position: "top",
+        colorScheme: "red",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
     onClickLogin();
   });
 
@@ -63,15 +91,12 @@ const Login = () => {
 
         <form onSubmit={onSubmit}>
           <Box width="sm" paddingY={6} textAlign={"center"}>
-            <FormControl
-              isInvalid={Boolean(errors.user_address)}
-              paddingBottom={6}
-            >
+            <FormControl isInvalid={Boolean(errors.email)} paddingBottom={6}>
               <FormLabel htmlFor="email">メールアドレス</FormLabel>
               <Input
                 id="email"
                 // 必須、50文字以内、半角英数字メールアドレス形式のバリデーション
-                {...register("user_address", {
+                {...register("email", {
                   required: "必須項目です",
                   maxLength: {
                     value: 50,
@@ -84,17 +109,14 @@ const Login = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.user_address && errors.user_address.message}
+                {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl
-              isInvalid={Boolean(errors.user_password)}
-              paddingBottom={6}
-            >
+            <FormControl isInvalid={Boolean(errors.password)} paddingBottom={6}>
               <FormLabel>パスワード</FormLabel>
               <Input
-                type="user-password"
-                {...register("user_password", {
+                type="password"
+                {...register("password", {
                   required: "必須項目です",
                   minLength: {
                     value: 8,
@@ -104,14 +126,14 @@ const Login = () => {
                     value: 50,
                     message: "50文字以内で入力してください",
                   },
-                  pattern: {
-                    value: /^[0-9a-zA-Z]*$/,
-                    message: "半角英数字で入力してください",
-                  },
+                  // pattern: {
+                  //   value: /^[0-9a-zA-Z]*$/,
+                  //   message: "半角英数字で入力してください",
+                  // },
                 })}
               />
               <FormErrorMessage>
-                {errors.user_password && errors.user_password.message}
+                {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
             <Button

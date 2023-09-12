@@ -1,11 +1,11 @@
-import React from "react";
 import { Flex, Box, Text, VStack, StackDivider } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 
 type ButtonStates = {
-  name: string;
+  folderName: string;
+  vision: string;
   active: boolean;
 };
 
@@ -19,7 +19,7 @@ function TaskList({ buttonStates }: Props) {
       <Box w="80%">
         <center>
           <Text as="b" fontSize="3xl">
-            得られる力 : {buttonStates.find((button) => button.active)?.name}
+            得られる力 : {buttonStates.find((button) => button.active)?.vision}
             <br />
           </Text>
         </center>

@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 class Position(models.Model):
@@ -48,10 +48,23 @@ class CustomUser(AbstractUser):
         return f"username: {self.username}, company: {self.company_id.name}, position: {self.position_id.position}"
 
 
+class Relation(models.Model):
+    boss_id = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="boss_id"
+    )
+    subordinate_id = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="subordinate_id"
+    )
+
+    def __str__(self):
+        return f"boss_id: {self.boss_id}, subordinate_id: {self.subordinate_id}"
+
+
 class StatusChoices(models.TextChoices):
     STATUS_TODO = "todo"
     STATUS_DOING = "doing"
     STATUS_DONE = "done"
+
 
 class Folder(models.Model):
     sender_id = models.ForeignKey(

@@ -54,6 +54,7 @@ const TaskList = () => {
                               ? "#CBD5E0"
                               : "#1275AE",
                         }}
+                        shake={task.status === "doing"}
                       />
                       <Text key={task.id} marginRight={6}>
                         {task.title}

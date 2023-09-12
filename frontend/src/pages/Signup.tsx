@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 
-type formInputs = {
+export type formInputs = {
   username: string;
   email: string;
   password: string;
@@ -33,40 +33,66 @@ const Signup = () => {
   } = useForm<formInputs>();
 
   const onSubmit = handleSubmit(async (data) => {
-    const authStatus = await axios
-      .post<formInputs>("http://127.0.0.1:8000/api/signup/", {
+    const response = await fetch("http://127.0.0.1:8000/api/signup/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         username: data.username,
-        password: data.password,
         email: data.email,
+        password: data.password,
         position_id: data.position_id,
         company_name: data.company_name,
         company_password: data.company_password,
-      })
-      //   .then(() => navigate("/login"))
-      .then(() => {
-        toast({
-          title: "登録しました",
-          status: "success",
-          position: "top",
-          colorScheme: "blue",
-          duration: 3000,
-          isClosable: true,
-        });
-        navigate("/login");
-      })
-      .catch((error) => {
-        toast({
-          title: "登録に失敗しました",
-          status: "error",
-          position: "top",
-          colorScheme: "red",
-          duration: 3000,
-          isClosable: true,
-        });
-        console.log(error.response);
-      });
-    console.log("POSTしたデータ:", data);
-    console.log("axiosのデータ: ", authStatus);
+      }),
+    });
+    const postedData = await response.json();
+    console.log(postedData);
+    toast({
+      title: "登録しました",
+      status: "success",
+      position: "top",
+      colorScheme: "blue",
+      duration: 3000,
+      isClosable: true,
+    });
+    navigate("/login");
+
+    // const authStatus = await axios
+    //   .post<formInputs>("http://127.0.0.1:8000/api/signup/", {
+    //     username: data.username,
+    //     password: data.password,
+    //     email: data.email,
+    //     position_id: data.position_id,
+    //     company_name: data.company_name,
+    //     company_password: data.company_password,
+    //   })
+    //   .then(() => navigate("/login"))
+    //   .then(() => {
+    //     toast({
+    //       title: "登録しました",
+    //       status: "success",
+    //       position: "top",
+    //       colorScheme: "blue",
+    //       duration: 3000,
+    //       isClosable: true,
+    //     });
+    //     navigate("/login");
+    //   })
+    //   .catch((error) => {
+    //     toast({
+    //       title: "登録に失敗しました",
+    //       status: "error",
+    //       position: "top",
+    //       colorScheme: "red",
+    //       duration: 3000,
+    //       isClosable: true,
+    //     });
+    //     console.log(error.response);
+    //   });
+    // console.log("POSTしたデータ:", data);
+    // console.log("axiosのデータ: ", authStatus);
   });
 
   return (

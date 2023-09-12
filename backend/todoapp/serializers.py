@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 
-from .models import Company, CustomUser, Folder
+from .models import Company, CustomUser, Folder, Comment
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -69,7 +69,7 @@ class FolderSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Folder
+        model = Comment
         fields = (
             "id",
             "task_id",

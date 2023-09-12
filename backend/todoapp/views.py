@@ -58,17 +58,16 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     # taskの存在判定もしないといけない
 
-    def list(self, request):
+    def get_queryset(self):
         print("ooooooo")
         # リクエストパラメータで指定したタスクのコメントのみ返す。
         # 関係する人にだけ見えるように
         task_id = self.request.query_params.get('task_id')
         queryset = Comment.objects.all()
         queryset=queryset.filter(task_id = task_id).order_by("-created_at")
-        task_query= Task.objects.all().filter(id=task_id)
+        # task_query= Task.objects.all().filter(id=task_id)
         # relate_user_ids = set(queryset.values("sender_id", "receiver_id")[0].values())
-        viewer_id=self.request.user.id
-
+        # viewer_id=self.request.user.id
         # if viewer_id in relate_user_ids:
         if True:
             return queryset

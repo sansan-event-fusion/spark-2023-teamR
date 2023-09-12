@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 
-from .models import Company, CustomUser
+from .models import Company, CustomUser, Folder
 
 
 class SignUpSerializer(serializers.ModelSerializer):

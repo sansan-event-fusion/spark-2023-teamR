@@ -1,10 +1,8 @@
 import React from "react";
 import { useState } from "react";
-import Faces from "./Faces";
 import {
   Box,
   Text,
-  VStack,
   Textarea,
   Button,
   Popover,
@@ -16,33 +14,15 @@ import {
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import {
-  faFaceSmile,
-  faFaceSmileWink,
-  faFaceSurprise,
-  faFaceKissWinkHeart,
-  faFaceGrinSquintTears,
-  faFaceGrinBeamSweat,
-  faFaceGrimace,
-  faFaceDizzy,
-  faFaceMehBlank,
-  faFaceGrinHearts,
-  faFaceGrinTongueSquint,
-} from "@fortawesome/free-regular-svg-icons";
+import { faFaceSmile } from "@fortawesome/free-regular-svg-icons";
+import { FaceIcons, Icon } from "./FaceIcons";
 
-// 表示に必要そうなデータ
-type Props = {
-  taskName: string;
-  taskContent: string;
-  memo: string;
-};
-
-function LikeComment() {
-  const reactions1 = ["smile", "suprise", "kiss", "squint", "beam"];
-  const reactions2 = ["grimace", "dizzy", "hearts", "tongue", "blank"];
+const LikeComment = () => {
   const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [reactions, setReactions] = useState<number[]>([]);
+
+  //選んだ顔のスタンプを保持する
+  const [selectedFace, setSelectedFace] = useState<Icon[]>([]);
 
   const handleInputChange = (e: { target: { value: any } }) => {
     const inputValue = e.target.value;
@@ -54,13 +34,9 @@ function LikeComment() {
     setIsOpen(!isOpen);
   };
 
-  const handleStampClick = (stampNum: number) => {
-    setReactions([...reactions, stampNum]);
-  };
-
   const handleSubmit = () => {
     setValue("");
-    setReactions([]);
+    setSelectedFace(selectedFace);
   };
 
   const onClose = () => {
@@ -130,118 +106,33 @@ function LikeComment() {
                 />
               </Button>
             </PopoverTrigger>
-            <PopoverContent width="auto" right={0} marginTop="5px">
+            <PopoverContent width="auto" right={-3} marginTop="5px">
               <PopoverCloseButton onClick={onClose} />
 
               <PopoverBody marginY="2" padding={"4"}>
-                <VStack>
-                  <HStack spacing={"6"} padding={"4"}>
-                    {reactions1.map((stampName) => {
-                      return <Faces stampName={stampName} />;
-                    })}
-                  </HStack>
-                  <HStack spacing={"6"} padding={"4"}>
-                    {reactions2.map((stampName) => {
-                      return <Faces stampName={stampName} />;
-                    })}
-                  </HStack>
-                </VStack>
+                {/* 顔を選ぶ */}
+                <FaceIcons
+                  selectedFace={selectedFace}
+                  setSelectedFace={setSelectedFace}
+                />
               </PopoverBody>
             </PopoverContent>
           </Popover>
-          {reactions.map((stampNumber) => {
-            switch (stampNumber) {
-              case 0:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceSmileWink}
-                    style={{ color: "#fbd92e" }}
-                    size="2xl"
-                    bounce
-                  />
-                );
-              case 1:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceSurprise}
-                    size="2xl"
-                    spin
-                    style={{ color: "#f503f6" }}
-                  />
-                );
-              case 2:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceKissWinkHeart}
-                    style={{ color: "#fe3d7f" }}
-                    beatFade
-                    size="2xl"
-                  />
-                );
-              case 3:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceGrinSquintTears}
-                    shake
-                    style={{ color: "#26a3ef" }}
-                    size="2xl"
-                  />
-                );
-              case 4:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceGrinBeamSweat}
-                    size="2xl"
-                    style={{ color: "#7bb241" }}
-                  />
-                );
-              case 5:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceGrimace}
-                    style={{ color: "#f1a900" }}
-                    size="2xl"
-                    bounce
-                  />
-                );
-              case 6:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceDizzy}
-                    size="2xl"
-                    spin
-                    style={{ color: "#9f9f9f" }}
-                  />
-                );
-              case 7:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceGrinHearts}
-                    beatFade
-                    size="2xl"
-                    style={{ color: "#ea3f79" }}
-                  />
-                );
-              case 8:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceGrinTongueSquint}
-                    style={{ color: "#5d17f6" }}
-                    shake
-                    size="2xl"
-                  />
-                );
-              case 9:
-                return (
-                  <FontAwesomeIcon
-                    icon={faFaceMehBlank}
-                    size="2xl"
-                    style={{ color: "#ad2c27" }}
-                  />
-                );
-            }
-            return false;
-          })}
+
+          {/* 選んだ顔を表示 */}
+          <Box>
+            <HStack>
+              {selectedFace.map((face) => (
+                <FontAwesomeIcon
+                  key={face.id}
+                  icon={face.icon}
+                  style={{ color: face.color }}
+                  size={face.size as any}
+                  className={face.animation}
+                />
+              ))}
+            </HStack>
+          </Box>
         </HStack>
 
         <Button
@@ -257,6 +148,6 @@ function LikeComment() {
       </Box>
     </>
   );
-}
+};
 
 export default LikeComment;

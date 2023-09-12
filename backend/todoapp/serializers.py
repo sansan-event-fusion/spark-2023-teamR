@@ -67,6 +67,15 @@ class FolderSerializer(serializers.ModelSerializer):
             "vision",
         )
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
+        fields = (
+            "id",
+            "task_id",
+            "content",
+        )
+
 
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()

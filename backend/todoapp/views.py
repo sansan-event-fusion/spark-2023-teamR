@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
-from .serializers import SignUpSerializer, LoginSerializer, FolderSerializer#, CommentSerializer
-from .models import Folder
+from .serializers import SignUpSerializer, LoginSerializer, FolderSerializer,CommentSerializer
+from .models import Folder, Comment, Task
 
 
 @api_view(["GET", "POST"])
@@ -56,17 +56,21 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
-    task_id = self.request.query_params.get('task_id')
     # taskの存在判定もしないといけない
 
     def list(self, request):
+        print("ooooooo")
         # リクエストパラメータで指定したタスクのコメントのみ返す。
-        # 関係する人は全員見えるように
+        # 関係する人にだけ見えるように
+        task_id = self.request.query_params.get('task_id')
+        queryset = Comment.objects.all()
         queryset=queryset.filter(task_id = task_id).order_by("-created_at")
-        relate_user_ids = set(queryset.values("sender_id", "receiver_id")[0].values())
+        task_query= Task.objects.all().filter(id=task_id)
+        # relate_user_ids = set(queryset.values("sender_id", "receiver_id")[0].values())
         viewer_id=self.request.user.id
 
-        if viewer_id in relate_user_ids:
+        # if viewer_id in relate_user_ids:
+        if True:
             return queryset
         else:
             return queryset.filter(task_id=-1) # 該当しないを返したい

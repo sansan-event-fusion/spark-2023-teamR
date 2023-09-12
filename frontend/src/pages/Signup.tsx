@@ -20,11 +20,12 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 
 type formInputs = {
-  user_name: string;
-  user_address: string;
-  user_password: string;
-  user_passwordConfirm: string;
-  company_id: string;
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  position_id: number;
+  company_name: string;
   company_password: string;
 };
 
@@ -39,17 +40,61 @@ const Signup = () => {
     formState: { errors, isSubmitting },
   } = useForm<formInputs>();
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    toast({
-      title: "登録しました",
-      status: "success",
-      position: "top",
-      colorScheme: "blue",
-      duration: 3000,
-      isClosable: true,
+  const onSubmit = handleSubmit(async (data) => {
+    const response = await fetch("http://127.0.0.1:8000/api/signup/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        position_id: data.position_id,
+        company_name: data.company_name,
+        company_password: data.company_password,
+      }),
     });
-    navigate("/login");
+    //登録情報が重複している場合はエラーを表示
+    if (response.status === 200) {
+      const postedData = await response.json();
+      console.log(postedData);
+      toast({
+        title: "登録成功",
+        description: "登録しました",
+        status: "success",
+        position: "top",
+        duration: 9000,
+        isClosable: true,
+      });
+      navigate("/login");
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      console.log(
+        "入力されたユーザー名またはメールアドレスは、すでに登録されています。",
+        errorData.message
+      );
+      toast({
+        title: "登録失敗",
+        description:
+          "入力されたユーザー名またはメールアドレスは、すでに登録されています。",
+        status: "error",
+        position: "top",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      const errorData = await response.json();
+      console.log("POST失敗", errorData.message);
+      toast({
+        title: "登録失敗",
+        description: "登録に失敗しました",
+        status: "error",
+        position: "top",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -82,7 +127,7 @@ const Signup = () => {
             </Box>
 
             {/* ユーザー名 */}
-            <FormControl isInvalid={Boolean(errors.user_name)} mb={4}>
+            <FormControl isInvalid={Boolean(errors.username)} mb={4}>
               <FormLabel htmlFor="name" fontSize="sm">
                 ユーザー名
               </FormLabel>
@@ -90,7 +135,7 @@ const Signup = () => {
                 id="name"
                 size="sm"
                 // 必須と50文字以内のバリデーション
-                {...register("user_name", {
+                {...register("username", {
                   required: "必須項目です",
                   maxLength: {
                     value: 50,
@@ -99,12 +144,12 @@ const Signup = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.user_name && errors.user_name.message}
+                {errors.username && errors.username.message}
               </FormErrorMessage>
             </FormControl>
 
             {/* メールアドレス */}
-            <FormControl isInvalid={Boolean(errors.user_address)} mb={4}>
+            <FormControl isInvalid={Boolean(errors.email)} mb={4}>
               <FormLabel htmlFor="email" fontSize="sm">
                 メールアドレス
               </FormLabel>
@@ -112,7 +157,7 @@ const Signup = () => {
                 id="email"
                 size="sm"
                 // 必須、50文字以内、半角英数字メールアドレス形式のバリデーション
-                {...register("user_address", {
+                {...register("email", {
                   required: "必須項目です",
                   maxLength: {
                     value: 50,
@@ -125,20 +170,20 @@ const Signup = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.user_address && errors.user_address.message}
+                {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={Boolean(errors.user_password)} mb={4}>
-              <FormLabel htmlFor="user_password" fontSize="sm">
+            <FormControl isInvalid={Boolean(errors.password)} mb={4}>
+              <FormLabel htmlFor="password" fontSize="sm">
                 パスワード
               </FormLabel>
               <InputGroup>
                 <Input
-                  id="user_password"
+                  id="password"
                   size="sm"
                   type={showPassword ? "text" : "password"}
                   // 必須、8文字以上、50文字以内、半角英数字のバリデーション
-                  {...register("user_password", {
+                  {...register("password", {
                     required: "必須項目です",
                     minLength: {
                       value: 8,
@@ -167,24 +212,21 @@ const Signup = () => {
                 </InputRightElement>
               </InputGroup>
               <FormErrorMessage>
-                {errors.user_password && errors.user_password.message}
+                {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
 
-            <FormControl
-              isInvalid={Boolean(errors.user_passwordConfirm)}
-              mb={4}
-            >
-              <FormLabel htmlFor="user_passwordConfirm" fontSize="sm">
+            <FormControl isInvalid={Boolean(errors.passwordConfirm)} mb={4}>
+              <FormLabel htmlFor="passwordConfirm" fontSize="sm">
                 確認パスワード
               </FormLabel>
               <InputGroup>
                 <Input
-                  id="user_passwordConfirm"
+                  id="passwordConfirm"
                   size="sm"
                   type={showPasswordConfirm ? "text" : "password"}
                   // 必須、8文字以上、50文字以内、半角英数字、パスワードと一致するかのバリデーション
-                  {...register("user_passwordConfirm", {
+                  {...register("passwordConfirm", {
                     required: "必須項目です",
                     minLength: {
                       value: 8,
@@ -199,7 +241,7 @@ const Signup = () => {
                       message: "半角英数字で入力してください",
                     },
                     validate: (value) =>
-                      value === getValues("user_password") ||
+                      value === getValues("password") ||
                       "パスワードが一致しません",
                   })}
                 />
@@ -216,8 +258,7 @@ const Signup = () => {
                 </InputRightElement>
               </InputGroup>
               <FormErrorMessage>
-                {errors.user_passwordConfirm &&
-                  errors.user_passwordConfirm.message}
+                {errors.passwordConfirm && errors.passwordConfirm.message}
               </FormErrorMessage>
             </FormControl>
 
@@ -228,16 +269,38 @@ const Signup = () => {
               </AbsoluteCenter>
             </Box>
 
+            {/* ポジションID */}
+            <FormControl isInvalid={Boolean(errors.position_id)} mb={5}>
+              <FormLabel htmlFor="position_id">ポジションID</FormLabel>
+              <Input
+                id="position_id"
+                // 必須と50文字以内のバリデーション
+                {...register("position_id", {
+                  required: "必須項目です",
+                  maxLength: {
+                    value: 50,
+                    message: "50文字以内で入力してください",
+                  },
+                  pattern: {
+                    value: /^[0-9a-zA-Z]*$/,
+                    message: "半角英数字で入力してください",
+                  },
+                })}
+              />
+              <FormErrorMessage>
+                {errors.position_id && errors.position_id.message}
+              </FormErrorMessage>
+            </FormControl>
             {/* 会社ID */}
-            <FormControl isInvalid={Boolean(errors.company_id)} mb={4}>
-              <FormLabel htmlFor="company_id" fontSize="sm">
+            <FormControl isInvalid={Boolean(errors.company_name)} mb={4}>
+              <FormLabel htmlFor="company_name" fontSize="sm">
                 会社ID
               </FormLabel>
               <Input
-                id="company_id"
+                id="company_name"
                 size="sm"
                 // 必須と50文字以内のバリデーション
-                {...register("company_id", {
+                {...register("company_name", {
                   required: "必須項目です",
                   minLength: {
                     value: 4,
@@ -246,7 +309,7 @@ const Signup = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.company_id && errors.company_id.message}
+                {errors.company_name && errors.company_name.message}
               </FormErrorMessage>
             </FormControl>
 

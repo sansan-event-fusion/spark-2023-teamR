@@ -309,6 +309,7 @@ function LikeComment() {
                   />
                 );
             }
+            return false;
           })}
         </HStack>
 

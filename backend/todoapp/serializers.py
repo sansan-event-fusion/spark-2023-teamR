@@ -41,6 +41,8 @@ class SignUpSerializer(serializers.ModelSerializer):
                 {"company_password": "Company password does not match."}
             )
 
+        # password, company フィールドを作成
+        data["password"] = data["password1"]
         data["company_id"] = company
         return data
 
@@ -48,9 +50,8 @@ class SignUpSerializer(serializers.ModelSerializer):
         # CustomUser オブジェクトの作成に不必要なフィールドを削除
         validated_data.pop("company_name", None)
         validated_data.pop("company_password", None)
+        validated_data.pop("password1", None)
         validated_data.pop("password2", None)
-        # password フィールドを作成
-        validated_data["password"] = validated_data.pop("password1")
         user = CustomUser.objects.create(**validated_data)
         return user
 

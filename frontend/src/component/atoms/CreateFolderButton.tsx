@@ -16,49 +16,39 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, Icon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { Folders } from "../../type/Types";
 
-type ButtonStates = {
-  buttonStates: {
-    folderName: string;
-    vision: string;
-    active: boolean;
-  }[];
-  setButtonStates: React.Dispatch<
-    React.SetStateAction<
-      {
-        folderName: string;
-        vision: string;
-        active: boolean;
-      }[]
-    >
-  >;
+type Props = {
+  folders: Folders;
+  setFolders: React.Dispatch<React.SetStateAction<Folders>>;
+  setActiveFolderId: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 const CreateFolderButton = ({
-  buttonStates,
-  setButtonStates,
-}: ButtonStates) => {
+  folders,
+  setFolders,
+  setActiveFolderId,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [folderName, setFolderName] = useState("");
+  const [title, setTitle] = useState("");
   const [vision, setVision] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = () => {
-    if (vision.trim() === "" || folderName.trim() === "") {
+    if (vision.trim() === "" || title.trim() === "") {
       setError("入力必須です。空白は使用できません");
     } else {
-      const newButtonState = {
-        folderName: folderName,
+      const createFolderContents = {
+        id: folders.length + 1,
+        title: title,
         vision: vision,
-        active: true,
+        tasks: [],
       };
-
-      const updatedButtonStates = [...buttonStates, newButtonState];
-      setButtonStates(updatedButtonStates);
+      setFolders([...folders, createFolderContents]);
+      setActiveFolderId(createFolderContents.id);
+      setTitle("");
       setVision("");
-      setFolderName("");
       onClose();
-      console.log(buttonStates);
     }
   };
   const handleButtonClick = () => {
@@ -97,10 +87,7 @@ const CreateFolderButton = ({
             <FormLabel w="60vh" marginX="2" marginY="2">
               フォルダ名
             </FormLabel>
-            <Input
-              value={folderName}
-              onChange={(e) => setFolderName(e.target.value)}
-            />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             <FormErrorMessage>{error}</FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={Boolean(error)}>

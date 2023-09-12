@@ -11,7 +11,6 @@ import {
   Box,
   useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
 
 export type formInputs = {
   username: string;
@@ -47,52 +46,42 @@ const Signup = () => {
         company_password: data.company_password,
       }),
     });
-    const postedData = await response.json();
-    console.log(postedData);
-    toast({
-      title: "登録しました",
-      status: "success",
-      position: "top",
-      colorScheme: "blue",
-      duration: 3000,
-      isClosable: true,
-    });
-    navigate("/login");
-
-    // const authStatus = await axios
-    //   .post<formInputs>("http://127.0.0.1:8000/api/signup/", {
-    //     username: data.username,
-    //     password: data.password,
-    //     email: data.email,
-    //     position_id: data.position_id,
-    //     company_name: data.company_name,
-    //     company_password: data.company_password,
-    //   })
-    //   .then(() => navigate("/login"))
-    //   .then(() => {
-    //     toast({
-    //       title: "登録しました",
-    //       status: "success",
-    //       position: "top",
-    //       colorScheme: "blue",
-    //       duration: 3000,
-    //       isClosable: true,
-    //     });
-    //     navigate("/login");
-    //   })
-    //   .catch((error) => {
-    //     toast({
-    //       title: "登録に失敗しました",
-    //       status: "error",
-    //       position: "top",
-    //       colorScheme: "red",
-    //       duration: 3000,
-    //       isClosable: true,
-    //     });
-    //     console.log(error.response);
-    //   });
-    // console.log("POSTしたデータ:", data);
-    // console.log("axiosのデータ: ", authStatus);
+    //登録情報が重複している場合はエラーを表示
+    if (response.status === 200) {
+      const postedData = await response.json();
+      console.log(postedData);
+      toast({
+        title: "登録成功",
+        description: "登録しました",
+        status: "success",
+        position: "top",
+        duration: 9000,
+        isClosable: true,
+      });
+      navigate("/login");
+    } else if (response.status === 400) {
+      const errorData = await response.json();
+      console.log("すでに登録されています", errorData.message);
+      toast({
+        title: "登録失敗",
+        description: "すでに登録されています",
+        status: "error",
+        position: "top",
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      const errorData = await response.json();
+      console.log("POST失敗", errorData.message);
+      toast({
+        title: "登録失敗",
+        description: "登録に失敗しました",
+        status: "error",
+        position: "top",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   });
 
   return (

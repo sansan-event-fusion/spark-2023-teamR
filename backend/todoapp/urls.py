@@ -10,4 +10,4 @@ urlpatterns = [
     path('signup/', signup_view, name="signup"),
     path("signin/", signin_view, name="signin"),
     path("signout/", signout_view, name="signout")
-]
+] + router.urls

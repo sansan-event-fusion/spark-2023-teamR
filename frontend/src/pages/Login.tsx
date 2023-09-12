@@ -10,7 +10,13 @@ import {
   Container,
   Box,
   useToast,
+  InputGroup,
+  InputRightElement,
+  Icon,
 } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+
+import { useState } from "react";
 
 //自動ログイン機能は後で実装
 
@@ -22,6 +28,7 @@ type formInputs = {
 const Login = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     handleSubmit,
@@ -45,6 +52,8 @@ const Login = () => {
   const onClickLogin = async () => {
     navigate("/fresherTop");
   };
+
+  const handleClickPassword = () => setShowPassword(!showPassword);
 
   return (
     <Box>
@@ -92,24 +101,38 @@ const Login = () => {
               paddingBottom={6}
             >
               <FormLabel>パスワード</FormLabel>
-              <Input
-                type="user-password"
-                {...register("user_password", {
-                  required: "必須項目です",
-                  minLength: {
-                    value: 8,
-                    message: "8文字以上で入力してください",
-                  },
-                  maxLength: {
-                    value: 50,
-                    message: "50文字以内で入力してください",
-                  },
-                  pattern: {
-                    value: /^[0-9a-zA-Z]*$/,
-                    message: "半角英数字で入力してください",
-                  },
-                })}
-              />
+              <InputGroup>
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  {...register("user_password", {
+                    required: "必須項目です",
+                    minLength: {
+                      value: 8,
+                      message: "8文字以上で入力してください",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: "50文字以内で入力してください",
+                    },
+                    pattern: {
+                      value: /^[0-9a-zA-Z]*$/,
+                      message: "半角英数字で入力してください",
+                    },
+                  })}
+                />
+                <InputRightElement
+                  marginRight={2}
+                  height={"100%"}
+                  onClick={handleClickPassword}
+                >
+                  {showPassword ? (
+                    <Icon as={ViewIcon} />
+                  ) : (
+                    <Icon as={ViewOffIcon} />
+                  )}
+                </InputRightElement>
+              </InputGroup>
               <FormErrorMessage>
                 {errors.user_password && errors.user_password.message}
               </FormErrorMessage>

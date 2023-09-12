@@ -30,7 +30,7 @@ const Login = () => {
   } = useForm<formInputs>();
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("POSTするデータ：", data);
+    console.log("POSTするデータ", data);
     //curl -X POST http://127.0.0.1:8000/api/signin/ -H "Content-Type: application/json" -d '{"email": "admin@example.com", "password": "admin_password"}'{"url": "redirect to succcess page"}
     const response = await fetch("http://127.0.0.1:8000/api/signin/", {
       method: "POST",
@@ -38,41 +38,27 @@ const Login = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user_address: data.email,
-        user_password: data.password,
+        email: data.email,
+        password: data.password,
       }),
     });
-    const postedData = await response.json();
-    console.log("POSTできたデータ：", postedData);
-    //ログイン成功時の処理と失敗の処理
-    if (postedData.status === "success") {
+    if (response.status === 200) {
+      const postedData = await response.json();
+      console.log("POST成功:", postedData);
       toast({
-        title: "ログインしました",
+        title: "ログイン成功",
+        description: "ログインしました",
         status: "success",
         position: "top",
-        colorScheme: "blue",
-        duration: 3000,
+        duration: 9000,
         isClosable: true,
       });
       navigate("/fresherTop");
     } else {
-      //失敗の内容をコンソールに表示
-      console.log(postedData.error.message);
-      toast({
-        title: "ログインに失敗しました",
-        status: "error",
-        position: "top",
-        colorScheme: "red",
-        duration: 3000,
-        isClosable: true,
-      });
+      const errorData = await response.json();
+      console.log("POST失敗", errorData.message);
     }
-    onClickLogin();
   });
-
-  const onClickLogin = async () => {
-    navigate("/fresherTop");
-  };
 
   return (
     <Box>

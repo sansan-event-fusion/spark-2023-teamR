@@ -1,11 +1,14 @@
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+from rest_framework import status, viewsets
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, viewsets
-from .serializers import SignUpSerializer, LoginSerializer, TaskSerializer
-from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
-from .models import Task
+
+from .models import Folder, Task
+from .serializers import (FolderSerializer, LoginSerializer, SignUpSerializer,
+                          TaskSerializer)
 
 
 @api_view(["GET", "POST"])
@@ -23,6 +26,34 @@ def signup_view(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class FolderViewSet(viewsets.ModelViewSet):
+    queryset = Folder.objects.all()
+    serializer_class = FolderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        query_type = self.request.query_params.get("type", None)
+        status = self.request.query_params.get("status", None)
+        queryset = Folder.objects.all()
+        if status:
+            queryset = queryset.filter(status=status)
+        if query_type == "received":
+            queryset = queryset.filter(receiver_id=self.request.user).order_by(
+                "-created_at"
+            )
+        elif query_type == "sent":
+            queryset = queryset.filter(sender_id=self.request.user).order_by(
+                "-created_at"
+            )
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer = FolderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        folder = serializer.save(sender_id=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def signin_view(request):
@@ -38,9 +69,10 @@ def signin_view(request):
         )
     else:
         login(request, user)
-        # ここ何を返す？
+        token, created = Token.objects.get_or_create(user=user)
+
         return JsonResponse(
-            data={"url": "redirect to succcess page"},
+            data={"url": "redirect to succcess page", "token": token.key},
             status=status.HTTP_200_OK,
         )
 

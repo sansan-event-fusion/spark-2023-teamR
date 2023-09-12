@@ -1,10 +1,11 @@
 from django.urls import path
 from .views import signup_view, signin_view, signout_view
 from rest_framework.routers import DefaultRouter
-from .views import TaskViewSet
+from .views import TaskViewSet, FolderViewSet
 
 router = DefaultRouter()
 router.register(r"task", TaskViewSet)
+router.register(r"folders", FolderViewSet)
 
 urlpatterns = [
     path("signup/", signup_view, name="signup"),

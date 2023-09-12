@@ -32,13 +32,20 @@ class FolderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         query_type = self.request.query_params.get("type", None)
         if query_type == "received":
-            return Folder.objects.filter(receiver_id=self.request.user.id).order_by(
+            return Folder.objects.filter(receiver_id=self.request.user).order_by(
                 "-created_at"
             )
         elif query_type == "sent":
-            return Folder.objects.filter(sender_id=self.request.user.id).order_by(
+            return Folder.objects.filter(sender_id=self.request.user).order_by(
                 "-created_at"
             )
+        return Folder.objects.none()
+
+    def create(self, request, *args, **kwargs):
+        serializer = FolderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        folder = serializer.save(sender_id=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(["POST"])

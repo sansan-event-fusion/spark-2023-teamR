@@ -61,7 +61,7 @@ class FolderSerializer(serializers.ModelSerializer):
         model = Folder
         fields = (
             "id",
-            "sender_id",
+            # sender_id は request.user.id にするため、ここでは取得しない
             "receiver_id",
             "title",
             "vision",

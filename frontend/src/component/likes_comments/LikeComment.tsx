@@ -106,7 +106,7 @@ const LikeComment = () => {
                 />
               </Button>
             </PopoverTrigger>
-            <PopoverContent width="auto" right={-3} marginTop="5px">
+            <PopoverContent width="auto" right={-3} marginTop="5px" ml="8">
               <PopoverCloseButton onClick={onClose} />
 
               <PopoverBody marginY="2" padding={"4"}>

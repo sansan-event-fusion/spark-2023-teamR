@@ -66,7 +66,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         sender_id = self.request.query_params.get("sent", None)
         receiver_id = self.request.query_params.get("received", None)
-        folder_id = self.request.query_params.get("folder", None)
+        folder_id = self.request.query_params.get("folder_id", None)
         status = self.request.query_params.get("status", None)
         queryset = Task.objects.all()
         if sender_id:

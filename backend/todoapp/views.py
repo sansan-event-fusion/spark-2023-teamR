@@ -6,12 +6,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Folder, Task
+from .models import Folder, Task, Relation, CustomUser
 from .serializers import (
     FolderSerializer,
     LoginSerializer,
     SignUpSerializer,
     TaskSerializer,
+    RelationSerializer,
 )
 
 
@@ -123,3 +124,15 @@ def signout_view(request):
         data={"role": "none"},
         status=status.HTTP_200_OK,
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_subordinates(request):
+    subordinate_ids = Relation.objects.filter(boss_id=request.user).values_list(
+        "subordinate_id", flat=True
+    )
+    subordinates = CustomUser.objects.filter(id__in=subordinate_ids)
+
+    serializer = RelationSerializer(subordinates, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

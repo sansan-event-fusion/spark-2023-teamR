@@ -1,3 +1,4 @@
+cd backend
 echo migrationStart
 python manage.py migrate
 echo migrationEnd

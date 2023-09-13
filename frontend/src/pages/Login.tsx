@@ -21,8 +21,8 @@ import { useState } from "react";
 //自動ログイン機能は後で実装
 
 type formInputs = {
-  user_address: string;
-  user_password: string;
+  email: string;
+  password: string;
 };
 
 const Login = () => {
@@ -36,22 +36,34 @@ const Login = () => {
     formState: { errors, isSubmitting },
   } = useForm<formInputs>();
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    toast({
-      title: "ログインしました",
-      status: "success",
-      position: "top",
-      colorScheme: "blue",
-      duration: 3000,
-      isClosable: true,
+  const onSubmit = handleSubmit(async (data) => {
+    const response = await fetch("http://127.0.0.1:8000/api/signin/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
     });
-    onClickLogin();
+    if (response.status === 200) {
+      const postedData = await response.json();
+      console.log("POST成功:", postedData);
+      toast({
+        title: "ログイン成功",
+        description: "ログインしました",
+        status: "success",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      });
+      navigate("/fresherTop");
+    } else {
+      const errorData = await response.json();
+      console.log("POST失敗", errorData.message);
+    }
   });
-
-  const onClickLogin = async () => {
-    navigate("/fresherTop");
-  };
 
   const handleClickPassword = () => setShowPassword(!showPassword);
 
@@ -72,15 +84,12 @@ const Login = () => {
 
         <form onSubmit={onSubmit}>
           <Box width="sm" paddingY={6} textAlign={"center"}>
-            <FormControl
-              isInvalid={Boolean(errors.user_address)}
-              paddingBottom={6}
-            >
+            <FormControl isInvalid={Boolean(errors.email)} paddingBottom={6}>
               <FormLabel htmlFor="email">メールアドレス</FormLabel>
               <Input
                 id="email"
                 // 必須、50文字以内、半角英数字メールアドレス形式のバリデーション
-                {...register("user_address", {
+                {...register("email", {
                   required: "必須項目です",
                   maxLength: {
                     value: 50,
@@ -93,19 +102,16 @@ const Login = () => {
                 })}
               />
               <FormErrorMessage>
-                {errors.user_address && errors.user_address.message}
+                {errors.email && errors.email.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl
-              isInvalid={Boolean(errors.user_password)}
-              paddingBottom={6}
-            >
+            <FormControl isInvalid={Boolean(errors.password)} paddingBottom={6}>
               <FormLabel>パスワード</FormLabel>
               <InputGroup>
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  {...register("user_password", {
+                  {...register("password", {
                     required: "必須項目です",
                     minLength: {
                       value: 8,
@@ -114,10 +120,6 @@ const Login = () => {
                     maxLength: {
                       value: 50,
                       message: "50文字以内で入力してください",
-                    },
-                    pattern: {
-                      value: /^[0-9a-zA-Z]*$/,
-                      message: "半角英数字で入力してください",
                     },
                   })}
                 />
@@ -134,7 +136,7 @@ const Login = () => {
                 </InputRightElement>
               </InputGroup>
               <FormErrorMessage>
-                {errors.user_password && errors.user_password.message}
+                {errors.password && errors.password.message}
               </FormErrorMessage>
             </FormControl>
             <Button

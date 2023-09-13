@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 
 type Auth = {
-  userId: string;
+  token: string;
 };
 type AuthContextType = {
   auth: Auth;
@@ -12,7 +12,7 @@ type AuthContextType = {
 const LoginContext = React.createContext<boolean>(false);
 
 const AuthContext = React.createContext<AuthContextType>({
-  auth: { userId: "" },
+  auth: { token: "" },
   setAuth: () => {},
 });
 
@@ -22,10 +22,10 @@ const useAuth = () => {
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [login, setLogin] = useState<boolean>(false);
-  const [auth, setAuth] = useState<Auth>({ userId: "" });
+  const [auth, setAuth] = useState<Auth>({ token: "" });
 
   useEffect(() => {
-    if (auth?.userId) {
+    if (auth?.token) {
       setLogin(true);
     } else {
       setLogin(false);

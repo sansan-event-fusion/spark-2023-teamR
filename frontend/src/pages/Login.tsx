@@ -17,8 +17,7 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { useState } from "react";
-
-//自動ログイン機能は後で実装
+import { useAuth } from "../AuthContext";
 
 type formInputs = {
   email: string;
@@ -29,6 +28,7 @@ const Login = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const { setAuth } = useAuth();
 
   const {
     handleSubmit,
@@ -48,11 +48,11 @@ const Login = () => {
       }),
     });
     if (response.status === 200) {
-      const postedData = await response.json();
-      console.log("POST成功:", postedData);
+      const responseData = await response.json();
+      setAuth(responseData.token);
+      console.log("POST成功:", responseData);
       toast({
-        title: "ログイン成功",
-        description: "ログインしました",
+        title: "ログインしました",
         status: "success",
         position: "top",
         duration: 3000,
@@ -62,6 +62,14 @@ const Login = () => {
     } else {
       const errorData = await response.json();
       console.log("POST失敗", errorData.message);
+      toast({
+        title: "ログインできませんでした",
+        description: errorData.message,
+        status: "error",
+        position: "top",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   });
 
@@ -88,7 +96,6 @@ const Login = () => {
               <FormLabel htmlFor="email">メールアドレス</FormLabel>
               <Input
                 id="email"
-                // 必須、50文字以内、半角英数字メールアドレス形式のバリデーション
                 {...register("email", {
                   required: "必須項目です",
                   maxLength: {

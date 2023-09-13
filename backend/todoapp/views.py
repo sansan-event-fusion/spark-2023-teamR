@@ -71,8 +71,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         # リクエストパラメータで指定したタスクのコメントのみ返す。
         # 該当するタスクのsender, receiverだけ見えるように
         task_id = self.request.query_params.get('task_id')
-        queryset = Comment.objects.all().filter(task_id = task_id).order_by("-created_at")
-        task_query= Task.objects.all().filter(id=task_id)
+        queryset = Comment.objects.filter(task_id = task_id).order_by("-created_at")
+        task_query= Task.objects.filter(id=task_id)
         task_relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
         viewer = self.request.user
         viewer_id=viewer.id
@@ -82,21 +82,21 @@ class CommentViewSet(viewsets.ModelViewSet):
             if viewer_id in task_relate_user_ids:
                 return queryset
             else:
-                return queryset.filter(task_id=-1) # 該当しないを返したい
+                return Comment.objects.none()
         else:
             return queryset
 
     def create(self, request, *args, **kwargs):
         # user が指定したタスクにコメントを残す。
         task_id = request.data.get('task_id')
-        task_query= Task.objects.all().filter(id=task_id)
+        task_query= Task.objects.filter(id=task_id)
         task_relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
         viewer = self.request.user
         viewer_id=viewer.id
         viewer_position = viewer.position_id
         if (viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE) and (viewer_id not in task_relate_user_ids):
             return JsonResponse(
-            data={"msg": "you dont have accecc permissions"},
+            data={"msg": "you dont have access permissions"},
             status=status.HTTP_400_BAD_REQUEST,
             )
         else:

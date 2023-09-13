@@ -116,14 +116,18 @@ class Task(models.Model):
 
 
 class Emotion(models.Model):
-    # Enum で Emotion を 6 段階にする
+    # Enum で Emotion を 10 段階にする
     class EmotionChoices(models.TextChoices):
-        EMOTION_GOOD = "good"
-        EMOTION_EXCELLENT = "excellent"
-        EMOTION_SAD = "sad"
-        EMOTION_EYES = "eyes"
-        EMOTION_CHECK = "check"
-        EMOTION_CONGRATS = "congrats"
+        EMOTION_SMILE = "smile"
+        EMOTION_SURPRISE = "surprise"
+        EMOTION_KISS = "kiss"
+        EMOTION_SQUINT = "squint"
+        EMOTION_BEAM = "beam"
+        EMOTION_GRIMACE = "grimace"
+        EMOTION_DIZZY = "dizzy"
+        EMOTION_HEARTS = "hearts"
+        EMOTION_TONGUE = "tongue"
+        EMOTION_BLANK = "blank"
 
     sender_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
@@ -134,7 +138,7 @@ class Emotion(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"task_id: {self.task_id}, type: {self.type}"
+        return f"task_id: {self.task_id}, type: {self.emotion_type}"
 
 
 class Comment(models.Model):

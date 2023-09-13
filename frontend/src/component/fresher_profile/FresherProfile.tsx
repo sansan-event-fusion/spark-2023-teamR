@@ -8,6 +8,8 @@ import {
   VStack,
   HStack,
 } from "@chakra-ui/react";
+import { useAuth } from "../../AuthContext";
+import { defaultIcon } from "../../style/defaultIcon";
 
 type FresherData = {
   img: string;
@@ -19,8 +21,8 @@ type FresherData = {
 };
 
 const FresherProfile = () => {
+  const { user } = useAuth();
   return (
-    // <Box>
     <Card padding="6">
       <HStack
         spacing={4}
@@ -29,50 +31,39 @@ const FresherProfile = () => {
       >
         <HStack>
           <Image
+            marginLeft={4}
             borderRadius="full"
             boxSize="60px"
-            src={"https://bit.ly/dan-abramov"}
-            alt="三三 次郎"
+            src={defaultIcon}
+            alt="default icon"
           />
           <VStack>
-            <Box ml="20px">
-              <Text fontSize="2xl">三三 次郎</Text>
-              <Text textAlign="left">営業</Text>
+            <Box ml="20px" paddingX={6} margin={0}>
+              <Text fontSize="2xl">{user.username}</Text>
             </Box>
           </VStack>
         </HStack>
 
         <VStack>
           <HStack>
-            <Text>完了タスク数</Text>
-            <Text fontSize={"2xl"} ml={"8"}>
-              33
+            <Box w={"80px"}>
+              <Text align="right">いいね数</Text>
+            </Box>
+            <Text fontSize={"2xl"} ml={"8"} align="right">
+              {user.count_emotions}
             </Text>
           </HStack>
           <HStack>
-            <Text>完了フォルダ数</Text>
+            <Box w={"80px"}>
+              <Text align="right">コメント数</Text>
+            </Box>
             <Text fontSize={"2xl"} ml={"8"}>
-              3
-            </Text>
-          </HStack>
-        </VStack>
-        <VStack>
-          <HStack>
-            <Text>いいね数</Text>
-            <Text fontSize={"2xl"} ml={"8"}>
-              33
-            </Text>
-          </HStack>
-          <HStack>
-            <Text>コメント数</Text>
-            <Text fontSize={"2xl"} ml={"8"}>
-              3
+              {user.count_comment}
             </Text>
           </HStack>
         </VStack>
       </HStack>
     </Card>
-    // </Box>
   );
 };
 

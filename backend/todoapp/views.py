@@ -6,7 +6,7 @@ from rest_framework import status, viewsets
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from .serializers import SignUpSerializer, LoginSerializer, FolderSerializer,CommentSerializer
-from .models import Folder, Comment, Task
+from .models import Folder, Comment, Task, Position
 
 
 @api_view(["GET", "POST"])
@@ -64,30 +64,38 @@ class CommentViewSet(viewsets.ModelViewSet):
         task_id = self.request.query_params.get('task_id')
         queryset = Comment.objects.all().filter(task_id = task_id).order_by("-created_at")
         task_query= Task.objects.all().filter(id=task_id)
-        relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
-        viewer_id=self.request.user.id
+        task_relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
+        viewer = self.request.user
+        viewer_id=viewer.id
+        viewer_position = viewer.position_id
 
-        if viewer_id in relate_user_ids:
-            return queryset
+        if viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE:
+            if viewer_id in task_relate_user_ids:
+                return queryset
+            else:
+                return queryset.filter(task_id=-1) # 該当しないを返したい
         else:
-            return queryset.filter(task_id=-1) # 該当しないを返したい
+            return queryset
 
     def create(self, request, *args, **kwargs):
         # user が指定したタスクにコメントを残す。
-        relate_user_ids = set(queryset.values("sender_id", "receiver_id")[0].values())
-        viewer_id=self.request.user.id
-        if viewer_id in relate_user_ids:
+        task_id = request.data.get('task_id')
+        task_query= Task.objects.all().filter(id=task_id)
+        # todo:共通処理抜き出したい
+        task_relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
+        viewer = self.request.user
+        viewer_id=viewer.id
+        viewer_position = viewer.position_id
+        if (viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE) and (viewer_id not in task_relate_user_ids):
+            return JsonResponse(
+            data={"msg": "you dont have accecc permissions"},
+            status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
             serializer = CommentSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             folder = serializer.save(sender_id=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return JsonResponse(
-            data={"msg": "you dont have accecc permissions"},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-        
-
 
 @api_view(["POST"])
 @permission_classes([AllowAny])

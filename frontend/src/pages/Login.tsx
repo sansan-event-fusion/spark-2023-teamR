@@ -18,6 +18,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
 import { useState } from "react";
 import { useAuth } from "../AuthContext";
+import { accessPointURL } from "../api/accessPoint";
 
 type formInputs = {
   email: string;
@@ -37,7 +38,7 @@ const Login = () => {
   } = useForm<formInputs>();
 
   const onSubmit = handleSubmit(async (data) => {
-    const response = await fetch("http://127.0.0.1:8000/api/signin/", {
+    const response = await fetch(`${accessPointURL}signin/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

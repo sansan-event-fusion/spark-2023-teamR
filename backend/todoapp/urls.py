@@ -2,12 +2,19 @@ from django.urls import path
 from .views import signup_view, signin_view, signout_view, get_subordinates
 from rest_framework.routers import DefaultRouter
 
-from .views import FolderViewSet, CommentViewSet, TaskViewSet, check_token
+from .views import (
+    FolderViewSet,
+    CommentViewSet,
+    TaskViewSet,
+    check_token,
+    RelationViewSet,
+)
 
 router = DefaultRouter()
 router.register(r"task", TaskViewSet)
 router.register(r"folders", FolderViewSet)
 router.register(r"comment", CommentViewSet)
+router.register(r"relation", RelationViewSet)
 
 urlpatterns = [
     path("signup/", signup_view, name="signup"),

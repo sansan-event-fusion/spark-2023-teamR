@@ -57,7 +57,7 @@ class Relation(models.Model):
     )
 
     def __str__(self):
-        return f"boss_id: {self.boss_id}, subordinate_id: {self.subordinate_id}"
+        return f"boss_id: {self.boss_id.id}, subordinate_id: {self.subordinate_id.id}"
 
 
 class StatusChoices(models.TextChoices):

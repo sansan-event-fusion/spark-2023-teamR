@@ -15,6 +15,7 @@ from .serializers import (
     SignUpSerializer,
     TaskSerializer,
     UserInfoSerializer,
+    RelationCreateSerializer,
 )
 
 
@@ -173,3 +174,16 @@ def check_token(request):
     user = request.user
     user_serializer = UserInfoSerializer(user)
     return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+
+# relation に関する API の viewset
+class RelationViewSet(viewsets.ModelViewSet):
+    queryset = Relation.objects.all()
+    serializer_class = RelationCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = RelationCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        relation = serializer.save(boss_id=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -55,7 +55,7 @@ const Login = () => {
         duration: 3000,
         isClosable: true,
       });
-      navigate(user.id !== 1 ? "/fresherTop" : "/elderTop");
+      navigate(user.position_id !== 1 ? "/fresherTop" : "/elderTop");
     } else {
       const errorData = await response.json();
       console.log("POST失敗", errorData.message);

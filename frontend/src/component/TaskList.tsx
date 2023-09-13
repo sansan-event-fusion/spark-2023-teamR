@@ -9,8 +9,9 @@ import { CreateTaskButton } from "./atoms/CreateTaskButton";
 
 const TaskList = () => {
   const { folders, setFolders, activeFolderId } = useContext(FolderContext);
+
   return (
-    <Box bg="blue.100" w="100%" h="100%" paddingY={6}>
+    <Box bg="blue.100" w="100%" minH={"70vh"} paddingY={6} roundedRight={"md"}>
       {folders.map((folder) => (
         <Box>
           {activeFolderId === folder.id && (

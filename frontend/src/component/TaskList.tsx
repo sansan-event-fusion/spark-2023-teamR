@@ -66,6 +66,15 @@ const TaskList = () => {
                     </Flex>
                   </Box>
                 ))}
+                {/* 
+                {user.position_id !== 1 && (
+                  <CreateTaskButton
+                    folder={folder}
+                    folders={folders}
+                    setFolders={setFolders}
+                  />
+                )}
+                */}
                 <CreateTaskButton
                   folder={folder}
                   folders={folders}

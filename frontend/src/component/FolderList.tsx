@@ -35,7 +35,15 @@ const FolderList = () => {
         </Button>
       ))}
 
-      {/* フォルダー作成ボタン */}
+      {/* ログインしているユーザーのposition idが1以外の場合はボタンを表示する */}
+      {/* {user.position_id !== 1 && (
+          <CreateFolderButton
+            folders={folders}
+            setFolders={setFolders}
+            setActiveFolderId={setActiveFolderId}
+          />
+        )} */}
+
       <CreateFolderButton
         folders={folders}
         setFolders={setFolders}

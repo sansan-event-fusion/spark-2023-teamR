@@ -20,7 +20,6 @@ type FresherData = {
 
 const FresherProfile = () => {
   return (
-    // <Box>
     <Card padding="6">
       <HStack
         spacing={4}
@@ -72,7 +71,6 @@ const FresherProfile = () => {
         </VStack>
       </HStack>
     </Card>
-    // </Box>
   );
 };
 

@@ -1,16 +1,48 @@
-//1つのフォルダーの中のタスク一覧を表示するコンポーネント
 import { Flex, VStack, Text, Box } from "@chakra-ui/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FolderContext } from "../FolderContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { CreateTaskButton } from "./atoms/CreateTaskButton";
 import { useAuth } from "../AuthContext";
+import { accessPointURL } from "../api/accessPoint";
+import { Tasks } from "../type/Types";
 
 const TaskList = () => {
   const { folders, setFolders, activeFolderId } = useContext(FolderContext);
-  const { user } = useAuth();
+  const { user, auth } = useAuth();
+  const [tasks, setTasks] = useState<Tasks>([]);
+
+  const getFolderIdTasks = async (token: string, folderId: number) => {
+    const response = await fetch(
+      `${accessPointURL}task/?folder_id=${folderId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      const responseData = await response.json();
+      console.log("TASK GET:", responseData);
+      setTasks(responseData);
+    } else {
+      console.log("GET失敗");
+    }
+  };
+
+  useEffect(() => {
+    if (auth.token !== undefined && activeFolderId !== null) {
+      console.log("auth.token:", auth.token);
+      getFolderIdTasks(auth.token, activeFolderId!);
+    } else {
+      console.log("auth.tokenがundefinedです");
+    }
+  }, [auth.token, activeFolderId]);
+
   return (
     <Box bg="blue.100" w="100%" minH={"70vh"} paddingY={6} roundedRight={"md"}>
       {folders.map((folder) => (
@@ -26,7 +58,7 @@ const TaskList = () => {
                     <Text fontSize="2xl">タスクがありません</Text>
                   </Box>
                 )}
-                {folder.tasks.map((task) => (
+                {tasks.map((task) => (
                   <Box
                     key={task.id}
                     rounded="lg"

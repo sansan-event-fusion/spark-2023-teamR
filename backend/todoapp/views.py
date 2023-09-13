@@ -67,6 +67,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         sender_id = self.request.query_params.get("sent", None)
         receiver_id = self.request.query_params.get("received", None)
         folder_id = self.request.query_params.get("folder", None)
+        status = self.request.query_params.get("status", None)
         queryset = Task.objects.all()
         if sender_id:
             if sender_id == "me":
@@ -80,6 +81,8 @@ class TaskViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(receiver_id=receiver_id)
         if folder_id:
             queryset = queryset.filter(folder_id=folder_id)
+        if status:
+            queryset = queryset.filter(status=status)
         queryset = queryset.order_by("-created_at")
         return queryset
 

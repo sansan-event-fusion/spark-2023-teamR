@@ -1,6 +1,13 @@
 import { useState } from "react";
 import SmallProfile from "./atoms/SmallProfile";
-import { Box, Button, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerContent,
+  DrawerOverlay,
+  Flex,
+} from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 
 const LeftPlacement = () => {
@@ -47,30 +54,41 @@ const LeftPlacement = () => {
         />
       </Box>
 
-      <Box
-        pos="fixed"
-        left={isOpen ? "0" : "-300px"}
-        top="0"
-        h="100vh"
-        w="250px"
-        bg="white"
-        borderRight="1px solid #ccc"
-        transition="left 0.3s ease"
+      <Drawer
+        isOpen={isOpen}
+        placement="left"
+        onClose={toggleSidebar}
+        size="xs"
+        closeOnOverlayClick={false}
       >
-        <Flex justify="center" align="center">
-          <Box ml="auto">新卒</Box>
-          <Button ml="auto" onClick={toggleSidebar} mt="2" bg="white">
-            <ChevronLeftIcon />
-          </Button>
-        </Flex>
+        <DrawerOverlay />
+        <DrawerContent>
+          <Box
+            pos="fixed"
+            left={isOpen ? "0" : "-300px"}
+            top="0"
+            h="100vh"
+            w="20rem"
+            bg="white"
+            borderRight="1px solid #ccc"
+            transition="left 0.3s ease"
+          >
+            <Flex justify="center" align="center">
+              <Box ml="auto">新卒</Box>
+              <Button ml="auto" onClick={toggleSidebar} mt="2" bg="white">
+                <ChevronLeftIcon />
+              </Button>
+            </Flex>
 
-        <SmallProfile
-          isOpen={isOpen}
-          img={freshers.img}
-          name={freshers.name}
-          position={freshers.position}
-        />
-      </Box>
+            <SmallProfile
+              isOpen={isOpen}
+              img={freshers.img}
+              name={freshers.name}
+              position={freshers.position}
+            />
+          </Box>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 };

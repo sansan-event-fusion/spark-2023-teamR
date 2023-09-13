@@ -3,6 +3,7 @@ import { Flex, Button } from "@chakra-ui/react";
 import { CreateFolderButton } from "./atoms/CreateFolderButton";
 import { Folder, Folders } from "../type/Types";
 import { FolderContext } from "../FolderContext";
+import { useAuth } from "../AuthContext";
 
 type Props = {
   activeFolderId: number | null;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 const FolderList = () => {
+  const { user } = useAuth();
   const { activeFolderId, setActiveFolderId, folders, setFolders }: Props =
     useContext(FolderContext);
 
@@ -35,20 +37,13 @@ const FolderList = () => {
         </Button>
       ))}
 
-      {/* ログインしているユーザーのposition idが1以外の場合はボタンを表示する */}
-      {/* {user.position_id !== 1 && (
-          <CreateFolderButton
-            folders={folders}
-            setFolders={setFolders}
-            setActiveFolderId={setActiveFolderId}
-          />
-        )} */}
-
-      <CreateFolderButton
-        folders={folders}
-        setFolders={setFolders}
-        setActiveFolderId={setActiveFolderId}
-      />
+      {user.position_id !== 1 && (
+        <CreateFolderButton
+          folders={folders}
+          setFolders={setFolders}
+          setActiveFolderId={setActiveFolderId}
+        />
+      )}
     </Flex>
   );
 };

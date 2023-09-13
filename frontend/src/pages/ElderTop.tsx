@@ -11,8 +11,8 @@ const ElderTop = () => {
       <Box>
         <LeftPlacement />
       </Box>
-      <VStack w={"100%"} h={"100%"} marginLeft={"80px"}>
-        <Box w="auto" marginTop={8} paddingY={2}>
+      <VStack w={"100%"} h={"100%"}>
+        <Box w="auto" paddingY={2}>
           <FresherProfile />
         </Box>
         <Flex

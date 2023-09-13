@@ -31,14 +31,13 @@ const LeftPlacement = () => {
   return (
     <>
       <Box
-        pos="fixed"
         left={isOpen ? "0" : "0px"}
-        top="0"
-        h="100vh"
+        minH="96vh"
         w="80px"
         bg="white"
         borderRight="1px solid #ccc"
         transition="left 0.3s ease"
+        zIndex={0}
       >
         <Flex justifyContent="center">
           <Button onClick={toggleSidebar} mt="2" bg="white">

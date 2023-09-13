@@ -93,3 +93,9 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class LogoutSerializer(serializers.ModelSerializer):
     pass
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        exclude = ("password",)

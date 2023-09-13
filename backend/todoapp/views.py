@@ -1,12 +1,18 @@
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
+from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, viewsets
-from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
-from .serializers import SignUpSerializer, LoginSerializer, FolderSerializer
-from .models import Folder
+
+from .models import Folder, Task
+from .serializers import (
+    FolderSerializer,
+    LoginSerializer,
+    SignUpSerializer,
+    TaskSerializer,
+)
 
 
 @api_view(["GET", "POST"])
@@ -49,6 +55,41 @@ class FolderViewSet(viewsets.ModelViewSet):
         serializer = FolderSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         folder = serializer.save(sender_id=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TaskViewSet(viewsets.ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        sender_id = self.request.query_params.get("sent", None)
+        receiver_id = self.request.query_params.get("received", None)
+        folder_id = self.request.query_params.get("folder_id", None)
+        status = self.request.query_params.get("status", None)
+        queryset = Task.objects.all()
+        if sender_id:
+            if sender_id == "me":
+                queryset = queryset.filter(sender_id=self.request.user)
+            else:
+                queryset = queryset.filter(sender_id=sender_id)
+        if receiver_id:
+            if receiver_id == "me":
+                queryset = queryset.filter(receiver_id=self.request.user)
+            else:
+                queryset = queryset.filter(receiver_id=receiver_id)
+        if folder_id:
+            queryset = queryset.filter(folder_id=folder_id)
+        if status:
+            queryset = queryset.filter(status=status)
+        queryset = queryset.order_by("-created_at")
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer = TaskSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        task = serializer.save(sender_id=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

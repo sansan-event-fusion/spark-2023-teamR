@@ -39,6 +39,7 @@ class FolderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         query_type = self.request.query_params.get("type", None)
         status = self.request.query_params.get("status", None)
+        receiver_id = self.request.query_params.get("receiver_id", None)
         queryset = Folder.objects.all()
         if status:
             queryset = queryset.filter(status=status)
@@ -49,6 +50,10 @@ class FolderViewSet(viewsets.ModelViewSet):
         elif query_type == "sent":
             queryset = queryset.filter(sender_id=self.request.user).order_by(
                 "-created_at"
+            )
+        if receiver_id:
+            queryset = queryset.filter(sender_id=self.request.user).filter(
+                receiver_id=receiver_id
             )
         return queryset
 

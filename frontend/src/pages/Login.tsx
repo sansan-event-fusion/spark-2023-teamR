@@ -15,7 +15,6 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-
 import { useState } from "react";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
@@ -24,19 +23,16 @@ type formInputs = {
   email: string;
   password: string;
 };
-
 const Login = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
-  const { setAuth } = useAuth();
-
+  const { user, setAuth } = useAuth();
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm<formInputs>();
-
   const onSubmit = handleSubmit(async (data) => {
     const response = await fetch(`${accessPointURL}signin/`, {
       method: "POST",
@@ -50,8 +46,8 @@ const Login = () => {
     });
     if (response.status === 200) {
       const responseData = await response.json();
-      setAuth(responseData.token);
-      console.log("POST成功:", responseData);
+      console.log("POST成功:", responseData.token);
+      setAuth({ token: responseData.token });
       toast({
         title: "ログインしました",
         status: "success",
@@ -59,7 +55,7 @@ const Login = () => {
         duration: 3000,
         isClosable: true,
       });
-      navigate("/fresherTop");
+      navigate(user.id === 1 ? "/fresherTop" : "/elderTop");
     } else {
       const errorData = await response.json();
       console.log("POST失敗", errorData.message);
@@ -73,9 +69,7 @@ const Login = () => {
       });
     }
   });
-
   const handleClickPassword = () => setShowPassword(!showPassword);
-
   return (
     <Box>
       <Container
@@ -90,7 +84,6 @@ const Login = () => {
         <Text fontSize="3xl" as="b" paddingY={2}>
           ログイン
         </Text>
-
         <form onSubmit={onSubmit}>
           <Box width="sm" paddingY={6} textAlign={"center"}>
             <FormControl isInvalid={Boolean(errors.email)} paddingBottom={6}>
@@ -176,5 +169,4 @@ const Login = () => {
     </Box>
   );
 };
-
 export { Login };

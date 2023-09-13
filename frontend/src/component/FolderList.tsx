@@ -1,8 +1,9 @@
 import { useContext } from "react";
-import { Flex, Button } from "@chakra-ui/react";
+import { Flex, Button, Box } from "@chakra-ui/react";
 import { CreateFolderButton } from "./atoms/CreateFolderButton";
 import { Folder, Folders } from "../type/Types";
 import { FolderContext } from "../FolderContext";
+import { useAuth } from "../AuthContext";
 
 type Props = {
   activeFolderId: number | null;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 const FolderList = () => {
+  const { user } = useAuth();
   const { activeFolderId, setActiveFolderId, folders, setFolders }: Props =
     useContext(FolderContext);
 
@@ -22,7 +24,11 @@ const FolderList = () => {
 
   return (
     <Flex direction="column" bg="white" w={120} roundedLeft={"md"}>
-      {/* フォルダー一覧を表示 */}
+      {folders.length === 0 && (
+        <Box paddingTop={4} textAlign={"center"}>
+          <p>フォルダーがありません</p>
+        </Box>
+      )}
       {folders.map((folder) => (
         <Button
           rounded="none"
@@ -35,12 +41,13 @@ const FolderList = () => {
         </Button>
       ))}
 
-      {/* フォルダー作成ボタン */}
-      <CreateFolderButton
-        folders={folders}
-        setFolders={setFolders}
-        setActiveFolderId={setActiveFolderId}
-      />
+      {user.position_id !== 1 && (
+        <CreateFolderButton
+          folders={folders}
+          setFolders={setFolders}
+          setActiveFolderId={setActiveFolderId}
+        />
+      )}
     </Flex>
   );
 };

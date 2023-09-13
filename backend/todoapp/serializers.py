@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 
-from .models import Company, CustomUser, Task, Folder
+from .models import Company, CustomUser, Folder, Comment, Task, Relation
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -69,6 +69,16 @@ class FolderSerializer(serializers.ModelSerializer):
         )
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = (
+            "id",
+            "task_id",
+            "content",
+        )
+
+
 class LoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
 
@@ -93,6 +103,21 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class LogoutSerializer(serializers.ModelSerializer):
     pass
+
+
+class RelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = [
+            "id",
+            "username",
+            "email",
+            "company_id",
+            "position_id",
+            "count_comment",
+            "count_emotions",
+            "date_joined",
+        ]
 
 
 class UserInfoSerializer(serializers.ModelSerializer):

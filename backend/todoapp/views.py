@@ -6,10 +6,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Folder, Task
+from .models import Comment, CustomUser, Folder, Position, Relation, Task
 from .serializers import (
+    CommentSerializer,
     FolderSerializer,
     LoginSerializer,
+    RelationSerializer,
     SignUpSerializer,
     TaskSerializer,
     UserInfoSerializer,
@@ -39,6 +41,7 @@ class FolderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         query_type = self.request.query_params.get("type", None)
         status = self.request.query_params.get("status", None)
+        receiver_id = self.request.query_params.get("receiver_id", None)
         queryset = Folder.objects.all()
         if status:
             queryset = queryset.filter(status=status)
@@ -50,12 +53,38 @@ class FolderViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(sender_id=self.request.user).order_by(
                 "-created_at"
             )
+        if receiver_id:
+            queryset = queryset.filter(sender_id=self.request.user).filter(
+                receiver_id=receiver_id
+            )
         return queryset
 
     def create(self, request, *args, **kwargs):
         serializer = FolderSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         folder = serializer.save(sender_id=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        # リクエストパラメータで指定したタスクのコメントのみ返す。
+        task_id = self.request.query_params.get("task_id")
+        queryset = Comment.objects.filter(task_id=task_id).order_by("-created_at")
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        # user が指定したタスクにコメントを残す。
+        self.request.user = self.request.user
+        serializer = CommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        comment = serializer.save(sender_id=request.user)
+        self.request.user.count_comment += 1
+        self.request.user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -124,6 +153,18 @@ def signout_view(request):
         data={"role": "none"},
         status=status.HTTP_200_OK,
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_subordinates(request):
+    subordinate_ids = Relation.objects.filter(boss_id=request.user).values_list(
+        "subordinate_id", flat=True
+    )
+    subordinates = CustomUser.objects.filter(id__in=subordinate_ids)
+
+    serializer = RelationSerializer(subordinates, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])

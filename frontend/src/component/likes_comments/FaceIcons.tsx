@@ -12,7 +12,14 @@ import {
   faFaceGrinTongueSquint,
   faFaceMehBlank,
 } from "@fortawesome/free-solid-svg-icons";
-import { Button, HStack } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  HStack,
+  VStack,
+  Wrap,
+  WrapItem,
+} from "@chakra-ui/react";
 
 const iconList = [
   {
@@ -83,7 +90,7 @@ const iconList = [
     icon: faFaceMehBlank,
     color: "#ad2c27",
     size: "2xl",
-    animation: "fa-pulse",
+    animation: "fa-bounce",
   },
 ];
 
@@ -111,24 +118,28 @@ const handleIconClick = (icon: Icon, selectedFace: Icon[]) => {
 
 const FaceIcons = ({ selectedFace, setSelectedFace }: Props) => {
   return (
-    <HStack>
+    <Wrap w="380px">
       {iconList.map((icon) => (
-        <Button
-          key={icon.id}
-          bg="none"
-          onClick={() => {
-            setSelectedFace(handleIconClick(icon, selectedFace));
-          }}
-        >
-          <FontAwesomeIcon
-            icon={icon.icon}
-            style={{ color: icon.color }}
-            size={icon.size as any}
-            className={icon.animation}
-          />
-        </Button>
+        <WrapItem>
+          <Center>
+            <Button
+              key={icon.id}
+              bg="none"
+              onClick={() => {
+                setSelectedFace(handleIconClick(icon, selectedFace));
+              }}
+            >
+              <FontAwesomeIcon
+                icon={icon.icon}
+                style={{ color: icon.color }}
+                size={icon.size as any}
+                className={icon.animation}
+              />
+            </Button>
+          </Center>
+        </WrapItem>
       ))}
-    </HStack>
+    </Wrap>
   );
 };
 

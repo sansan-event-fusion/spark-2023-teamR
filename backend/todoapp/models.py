@@ -27,7 +27,7 @@ class Company(models.Model):
     password = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"({self.id}) self.name"
+        return f"({self.id}) {self.name}"
 
     def save(self, *args, **kwargs):
         # オブジェクトがまだデータベースに保存されていない場合、パスワードをハッシュ化する

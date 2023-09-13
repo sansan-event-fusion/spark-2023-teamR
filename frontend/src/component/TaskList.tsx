@@ -5,9 +5,10 @@ import { FolderContext } from "../FolderContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
+import { CreateTaskButton } from "./atoms/CreateTaskButton";
 
 const TaskList = () => {
-  const { folders, activeFolderId } = useContext(FolderContext);
+  const { folders, setFolders, activeFolderId } = useContext(FolderContext);
   return (
     <Box bg="blue.100" w="100%" h="100%" paddingY={6}>
       {folders.map((folder) => (
@@ -19,7 +20,14 @@ const TaskList = () => {
               </Text>
               <VStack justifyContent="center" p={4}>
                 {folder.tasks.length === 0 && (
-                  <Text fontSize="2xl">タスクを追加＋</Text>
+                  <Box>
+                    <Text fontSize="2xl">タスクがありません</Text>
+                    <CreateTaskButton
+                      folder={folder}
+                      folders={folders}
+                      setFolders={setFolders}
+                    />
+                  </Box>
                 )}
                 {folder.tasks.map((task) => (
                   <Box
@@ -62,6 +70,11 @@ const TaskList = () => {
                     </Flex>
                   </Box>
                 ))}
+                <CreateTaskButton
+                  folder={folder}
+                  folders={folders}
+                  setFolders={setFolders}
+                />
               </VStack>
             </Box>
           )}

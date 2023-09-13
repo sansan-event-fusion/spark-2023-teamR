@@ -31,7 +31,6 @@ const LeftPlacement = () => {
   return (
     <>
       <Box
-        pos="fixed"
         left={isOpen ? "0" : "0px"}
         top="0"
         h="100vh"

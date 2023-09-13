@@ -12,6 +12,7 @@ from .serializers import (
     LoginSerializer,
     SignUpSerializer,
     TaskSerializer,
+    UserInfoSerializer,
 )
 
 
@@ -123,3 +124,11 @@ def signout_view(request):
         data={"role": "none"},
         status=status.HTTP_200_OK,
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_user_info_or_error(request):
+    user = request.user
+    user_serializer = UserInfoSerializer(user)
+    return Response(user_serializer.data, status=status.HTTP_200_OK)

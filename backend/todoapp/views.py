@@ -13,6 +13,7 @@ from .serializers import (
     SignUpSerializer,
     TaskSerializer,
     RelationSerializer,
+    UserInfoSerializer,
 )
 
 
@@ -136,3 +137,11 @@ def get_subordinates(request):
 
     serializer = RelationSerializer(subordinates, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def check_token(request):
+    user = request.user
+    user_serializer = UserInfoSerializer(user)
+    return Response(user_serializer.data, status=status.HTTP_200_OK)

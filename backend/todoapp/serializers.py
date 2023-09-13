@@ -108,3 +108,9 @@ class RelationSerializer(serializers.ModelSerializer):
             "count_emotions",
             "date_joined",
         ]
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        exclude = ("password",)

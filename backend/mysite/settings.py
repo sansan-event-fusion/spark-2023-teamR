@@ -36,6 +36,7 @@ except ImportError:
 # Application definition
 
 INSTALLED_APPS = [
+<<<<<<< Updated upstream
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -56,6 +57,28 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+=======
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'todoapp',
+    'corsheaders',
+]
+
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+>>>>>>> Stashed changes
     "corsheaders.middleware.CorsMiddleware",
 ]
 
@@ -140,6 +163,7 @@ REST_FRAMEWORK = {
     ),
 }
 AUTHENTICATION_BACKENDS = [
+<<<<<<< Updated upstream
     "django.contrib.auth.backends.ModelBackend",
     "todoapp.backends.EmailBackend",
 ]
@@ -156,3 +180,20 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
+=======
+    'django.contrib.auth.backends.ModelBackend',
+    'todoapp.backends.EmailBackend'
+]
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost',
+    'http://localhost:3000',
+)
+CORS_ALLOW_METHODS = [
+'DELETE',
+'GET',
+'OPTIONS',
+'PATCH',
+'POST',
+'PUT',
+]
+>>>>>>> Stashed changes

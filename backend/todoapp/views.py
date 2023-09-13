@@ -7,9 +7,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Comment, CustomUser, Folder, Position, Relation, Task
-from .serializers import (CommentSerializer, FolderSerializer, LoginSerializer,
-                          RelationSerializer, SignUpSerializer, TaskSerializer,
-                          UserInfoSerializer)
+from .serializers import (
+    CommentSerializer,
+    FolderSerializer,
+    LoginSerializer,
+    RelationSerializer,
+    SignUpSerializer,
+    TaskSerializer,
+    UserInfoSerializer,
+)
 
 
 @api_view(["GET", "POST"])
@@ -64,53 +70,22 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
-    # todo:taskの存在判定もしないといけない
 
     def get_queryset(self):
         # リクエストパラメータで指定したタスクのコメントのみ返す。
-        # 該当するタスクのsender, receiverだけ見えるように
         task_id = self.request.query_params.get("task_id")
         queryset = Comment.objects.filter(task_id=task_id).order_by("-created_at")
-        task_query = Task.objects.filter(id=task_id)
-        task_relate_user_ids = set(
-            task_query.values("sender_id", "receiver_id")[0].values()
-        )
-        viewer = self.request.user
-        viewer_id = viewer.id
-        viewer_position = viewer.position_id
-
-        if viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE:
-            if viewer_id in task_relate_user_ids:
-                return queryset
-            else:
-                return Comment.objects.none()
-        else:
-            return queryset
+        return queryset
 
     def create(self, request, *args, **kwargs):
         # user が指定したタスクにコメントを残す。
-        task_id = request.data.get("task_id")
-        task_query = Task.objects.filter(id=task_id)
-        task_relate_user_ids = set(
-            task_query.values("sender_id", "receiver_id")[0].values()
-        )
-        viewer = self.request.user
-        viewer_id = viewer.id
-        viewer_position = viewer.position_id
-        if (viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE) and (
-            viewer_id not in task_relate_user_ids
-        ):
-            return JsonResponse(
-                data={"msg": "you dont have access permissions"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        else:
-            serializer = CommentSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            folder = serializer.save(sender_id=request.user)
-            viewer.count_comment += 1
-            viewer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        self.request.user = self.request.user
+        serializer = CommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        comment = serializer.save(sender_id=request.user)
+        self.request.user.count_comment += 1
+        self.request.user.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TaskViewSet(viewsets.ModelViewSet):

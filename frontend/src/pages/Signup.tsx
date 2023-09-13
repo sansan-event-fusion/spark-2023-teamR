@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import { accessPointURL } from "../api/accessPoint";
 
 type formInputs = {
   username: string;
@@ -41,7 +42,7 @@ const Signup = () => {
   } = useForm<formInputs>();
 
   const onSubmit = handleSubmit(async (data) => {
-    const response = await fetch("http://127.0.0.1:8000/api/signup/", {
+    const response = await fetch(`${accessPointURL}signup/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

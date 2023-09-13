@@ -6,13 +6,14 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Folder, Task, Relation, CustomUser
+from .models import Comment, CustomUser, Folder, Position, Relation, Task
 from .serializers import (
+    CommentSerializer,
     FolderSerializer,
     LoginSerializer,
+    RelationSerializer,
     SignUpSerializer,
     TaskSerializer,
-    RelationSerializer,
     UserInfoSerializer,
 )
 
@@ -62,6 +63,28 @@ class FolderViewSet(viewsets.ModelViewSet):
         serializer = FolderSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         folder = serializer.save(sender_id=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        # リクエストパラメータで指定したタスクのコメントのみ返す。
+        task_id = self.request.query_params.get("task_id")
+        queryset = Comment.objects.filter(task_id=task_id).order_by("-created_at")
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        # user が指定したタスクにコメントを残す。
+        self.request.user = self.request.user
+        serializer = CommentSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        comment = serializer.save(sender_id=request.user)
+        self.request.user.count_comment += 1
+        self.request.user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

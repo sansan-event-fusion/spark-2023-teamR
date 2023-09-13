@@ -22,11 +22,6 @@ const TaskList = () => {
                 {folder.tasks.length === 0 && (
                   <Box>
                     <Text fontSize="2xl">タスクがありません</Text>
-                    <CreateTaskButton
-                      folder={folder}
-                      folders={folders}
-                      setFolders={setFolders}
-                    />
                   </Box>
                 )}
                 {folder.tasks.map((task) => (

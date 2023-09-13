@@ -96,9 +96,9 @@ class EmotionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         task_id = self.request.query_params.get("task_id", None)
-        queryset = Emotion.objects.all()
+        queryset = Emotion.objects.none()
         if task_id:
-            queryset = queryset.filter(task_id=task_id)
+            queryset = Emotion.objects.filter(task_id=task_id)
         return queryset
 
     def create(self, request, *args, **kwargs):

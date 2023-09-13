@@ -81,7 +81,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         # user が指定したタスクにコメントを残す。
         task_id = request.data.get('task_id')
         task_query= Task.objects.all().filter(id=task_id)
-        # todo:共通処理抜き出したい
         task_relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
         viewer = self.request.user
         viewer_id=viewer.id
@@ -95,6 +94,8 @@ class CommentViewSet(viewsets.ModelViewSet):
             serializer = CommentSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             folder = serializer.save(sender_id=request.user)
+            viewer.count_comment +=1
+            viewer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(["POST"])

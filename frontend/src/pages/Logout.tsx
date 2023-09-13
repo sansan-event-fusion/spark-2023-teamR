@@ -7,7 +7,7 @@ const Logout = () => {
   const navigate = useNavigate();
 
   const onClickLogout = () => {
-    setAuth({ userId: "" });
+    setAuth({ token: "" });
     navigate("/login");
   };
   return <Button onClick={onClickLogout}>ログアウト</Button>;

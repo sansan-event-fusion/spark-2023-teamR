@@ -5,17 +5,11 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, viewsets
-from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
-from .models import Folder, Task, Position, Comment
-from .serializers import (
-    FolderSerializer,
-    LoginSerializer,
-    SignUpSerializer,
-    TaskSerializer,
-    CommentSerializer,
-)
+
+from .models import Comment, CustomUser, Folder, Position, Relation, Task
+from .serializers import (CommentSerializer, FolderSerializer, LoginSerializer,
+                          RelationSerializer, SignUpSerializer, TaskSerializer,
+                          UserInfoSerializer)
 
 
 @api_view(["GET", "POST"])
@@ -41,6 +35,7 @@ class FolderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         query_type = self.request.query_params.get("type", None)
         status = self.request.query_params.get("status", None)
+        receiver_id = self.request.query_params.get("receiver_id", None)
         queryset = Folder.objects.all()
         if status:
             queryset = queryset.filter(status=status)
@@ -51,6 +46,10 @@ class FolderViewSet(viewsets.ModelViewSet):
         elif query_type == "sent":
             queryset = queryset.filter(sender_id=self.request.user).order_by(
                 "-created_at"
+            )
+        if receiver_id:
+            queryset = queryset.filter(sender_id=self.request.user).filter(
+                receiver_id=receiver_id
             )
         return queryset
 
@@ -70,12 +69,14 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # リクエストパラメータで指定したタスクのコメントのみ返す。
         # 該当するタスクのsender, receiverだけ見えるように
-        task_id = self.request.query_params.get('task_id')
-        queryset = Comment.objects.filter(task_id = task_id).order_by("-created_at")
-        task_query= Task.objects.filter(id=task_id)
-        task_relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
+        task_id = self.request.query_params.get("task_id")
+        queryset = Comment.objects.filter(task_id=task_id).order_by("-created_at")
+        task_query = Task.objects.filter(id=task_id)
+        task_relate_user_ids = set(
+            task_query.values("sender_id", "receiver_id")[0].values()
+        )
         viewer = self.request.user
-        viewer_id=viewer.id
+        viewer_id = viewer.id
         viewer_position = viewer.position_id
 
         if viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE:
@@ -88,24 +89,29 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # user が指定したタスクにコメントを残す。
-        task_id = request.data.get('task_id')
-        task_query= Task.objects.filter(id=task_id)
-        task_relate_user_ids = set(task_query.values("sender_id", "receiver_id")[0].values())
+        task_id = request.data.get("task_id")
+        task_query = Task.objects.filter(id=task_id)
+        task_relate_user_ids = set(
+            task_query.values("sender_id", "receiver_id")[0].values()
+        )
         viewer = self.request.user
-        viewer_id=viewer.id
+        viewer_id = viewer.id
         viewer_position = viewer.position_id
-        if (viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE) and (viewer_id not in task_relate_user_ids):
+        if (viewer_position == Position.PositionChoices.POSITION_NEW_GRADUATE) and (
+            viewer_id not in task_relate_user_ids
+        ):
             return JsonResponse(
-            data={"msg": "you dont have access permissions"},
-            status=status.HTTP_400_BAD_REQUEST,
+                data={"msg": "you dont have access permissions"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         else:
             serializer = CommentSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             folder = serializer.save(sender_id=request.user)
-            viewer.count_comment +=1
+            viewer.count_comment += 1
             viewer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
@@ -172,3 +178,23 @@ def signout_view(request):
         data={"role": "none"},
         status=status.HTTP_200_OK,
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_subordinates(request):
+    subordinate_ids = Relation.objects.filter(boss_id=request.user).values_list(
+        "subordinate_id", flat=True
+    )
+    subordinates = CustomUser.objects.filter(id__in=subordinate_ids)
+
+    serializer = RelationSerializer(subordinates, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def check_token(request):
+    user = request.user
+    user_serializer = UserInfoSerializer(user)
+    return Response(user_serializer.data, status=status.HTTP_200_OK)

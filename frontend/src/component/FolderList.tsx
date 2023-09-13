@@ -21,7 +21,7 @@ const FolderList = () => {
   };
 
   return (
-    <Flex direction="column" bg="white" w={120}>
+    <Flex direction="column" bg="white" w={120} roundedLeft={"md"}>
       {/* フォルダー一覧を表示 */}
       {folders.map((folder) => (
         <Button

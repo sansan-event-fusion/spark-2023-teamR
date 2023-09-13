@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 
-from .models import Company, CustomUser, Folder, Comment, Task, Relation
+from .models import Company, CustomUser, Folder, Comment, Task, Relation, Emotion
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -76,6 +76,16 @@ class CommentSerializer(serializers.ModelSerializer):
             "id",
             "task_id",
             "content",
+        )
+
+
+class EmotionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Emotion
+        fields = (
+            "id",
+            "task_id",
+            "emotion_type",
         )
 
 

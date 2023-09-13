@@ -6,9 +6,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Comment, CustomUser, Folder, Position, Relation, Task
+from .models import Comment, CustomUser, Emotion, Folder, Position, Relation, Task
 from .serializers import (
     CommentSerializer,
+    EmotionSerializer,
     FolderSerializer,
     LoginSerializer,
     RelationSerializer,
@@ -84,6 +85,27 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         comment = serializer.save(sender_id=request.user)
         self.request.user.count_comment += 1
+        self.request.user.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class EmotionViewSet(viewsets.ModelViewSet):
+    queryset = Emotion.objects.all()
+    serializer_class = EmotionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        task_id = self.request.query_params.get("task_id", None)
+        queryset = Emotion.objects.none()
+        if task_id:
+            queryset = Emotion.objects.filter(task_id=task_id)
+        return queryset
+
+    def create(self, request, *args, **kwargs):
+        serializer = EmotionSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        emotion = serializer.save(sender_id=request.user)
+        self.request.user.count_emotions += 1
         self.request.user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

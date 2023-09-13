@@ -65,6 +65,7 @@ class FolderSerializer(serializers.ModelSerializer):
             "receiver_id",
             "title",
             "vision",
+            "status",
         )
 
 

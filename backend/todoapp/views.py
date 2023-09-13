@@ -128,7 +128,7 @@ def signout_view(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def get_user_info_or_error(request):
+def check_token(request):
     user = request.user
     user_serializer = UserInfoSerializer(user)
     return Response(user_serializer.data, status=status.HTTP_200_OK)

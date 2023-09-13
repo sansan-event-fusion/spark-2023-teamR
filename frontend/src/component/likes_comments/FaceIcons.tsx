@@ -12,14 +12,7 @@ import {
   faFaceGrinTongueSquint,
   faFaceMehBlank,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  Button,
-  Center,
-  HStack,
-  VStack,
-  Wrap,
-  WrapItem,
-} from "@chakra-ui/react";
+import { Button, Center, Wrap, WrapItem } from "@chakra-ui/react";
 
 const iconList = [
   {

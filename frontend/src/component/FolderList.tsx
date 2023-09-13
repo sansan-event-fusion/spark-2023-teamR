@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Flex, Button } from "@chakra-ui/react";
+import { Flex, Button, Box } from "@chakra-ui/react";
 import { CreateFolderButton } from "./atoms/CreateFolderButton";
 import { Folder, Folders } from "../type/Types";
 import { FolderContext } from "../FolderContext";
@@ -24,7 +24,11 @@ const FolderList = () => {
 
   return (
     <Flex direction="column" bg="white" w={120} roundedLeft={"md"}>
-      {/* フォルダー一覧を表示 */}
+      {folders.length === 0 && (
+        <Box paddingTop={4} textAlign={"center"}>
+          <p>フォルダーがありません</p>
+        </Box>
+      )}
       {folders.map((folder) => (
         <Button
           rounded="none"

@@ -1,39 +1,35 @@
 import { createContext, useEffect, useState } from "react";
-import { Tasks } from "./type/Types";
+import { Task, Tasks } from "./type/Types";
 import { accessPointURL } from "./api/accessPoint";
 import { useAuth } from "./AuthContext";
 
 type TaskContextType = {
+  task: Task;
+  setTask: React.Dispatch<React.SetStateAction<Task>>;
   tasks: Tasks;
   setTasks: React.Dispatch<React.SetStateAction<Tasks>>;
 };
 
 const TaskContext = createContext<TaskContextType>({
+  task: {
+    title: "",
+    content: "",
+    status: "todo",
+    id: 0,
+  },
+  setTask: () => null,
   tasks: [],
   setTasks: () => null,
 });
 
 const TaskContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [tasks, setTasks] = useState<Tasks>([
-    {
-      id: 1,
-      title: "タスク1",
-      content: "タスク1の内容",
-      status: "todo",
-    },
-    {
-      id: 2,
-      title: "タスク2",
-      content: "タスク2の内容",
-      status: "doing",
-    },
-    {
-      id: 3,
-      title: "タスク3",
-      content: "タスク3の内容",
-      status: "done",
-    },
-  ]);
+  const [task, setTask] = useState<Task>({
+    title: "",
+    content: "",
+    status: "todo",
+    id: 0,
+  });
+  const [tasks, setTasks] = useState<Tasks>([]);
 
   const { auth } = useAuth();
 
@@ -61,10 +57,10 @@ const TaskContextProvider = ({ children }: { children: React.ReactNode }) => {
     } else {
       console.log("auth.tokenがundefinedです");
     }
-  }, [auth.token]);
+  }, [auth.token, task]);
 
   return (
-    <TaskContext.Provider value={{ tasks, setTasks }}>
+    <TaskContext.Provider value={{ task, setTask, tasks, setTasks }}>
       {children}
     </TaskContext.Provider>
   );

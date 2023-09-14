@@ -1,5 +1,20 @@
-import { Flex, VStack, Text, Box } from "@chakra-ui/react";
-import { useContext, useEffect } from "react";
+import {
+  Flex,
+  VStack,
+  Text,
+  Box,
+  Modal,
+  useDisclosure,
+  ModalBody,
+  ModalContent,
+  Button,
+  ModalOverlay,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  ModalCloseButton,
+} from "@chakra-ui/react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FolderContext } from "../FolderContext";
 import { TaskContext } from "../TaskContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,15 +23,12 @@ import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { CreateTaskButton } from "./atoms/CreateTaskButton";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { Task, Tasks } from "../type/Types";
 import { DoneTaskPage } from "../pages/DoneTaskPage";
 import { NotDoneTaskPage } from "../pages/NotDoneTaskPage";
-import { useNavigate } from "react-router-dom";
+import { Task } from "../type/Types";
 
 const TaskList = () => {
-
-  const navigate = useNavigate();
-  const { folders, setFolders, activeFolderId } = useContext(FolderContext);
+  const { folders, activeFolderId } = useContext(FolderContext);
   const { user, auth } = useAuth();
   const { tasks, setTasks } = useContext(TaskContext);
 
@@ -39,14 +51,13 @@ const TaskList = () => {
       console.log("GET失敗");
     }
   };
-
-  const handleTaskClick = (task: Task) => {
-    return task.status === "done" ? (
-      // <DoneTaskPage task={task} />
-      navigate("/doneTaskPage")
-    ) : (
-      <NotDoneTaskPage task={task} />
-    );
+  const leastDestructiveRef = useRef(null);
+  const [selectedItem, setSelectedItem] = useState<Task | null>(null);
+  const onOpen = (task: Task) => {
+    setSelectedItem(task);
+  };
+  const onClose = () => {
+    setSelectedItem(null);
   };
 
   useEffect(() => {
@@ -94,8 +105,35 @@ const TaskList = () => {
                         ? { bg: "gray.300" }
                         : { opacity: 0.8 }
                     }
-                    onClick={() => handleTaskClick(task)}
+                    onClick={() => onOpen(task)}
                   >
+                    <AlertDialog
+                      isOpen={task === selectedItem}
+                      onClose={onClose}
+                      leastDestructiveRef={leastDestructiveRef}
+                      autoFocus={false}
+                      isCentered
+                    >
+                      <AlertDialogOverlay>
+                        <AlertDialogContent>
+                          <ModalCloseButton />
+
+                          {task.status === "done" ? (
+                            <DoneTaskPage task={task} />
+                          ) : (
+                            <NotDoneTaskPage task={task} onClose={onClose} />
+                          )}
+
+                          <VStack
+                            marginTop={4}
+                            justifyContent={"center"}
+                            alignItems={"center"}
+                            textAlign={"center"}
+                          ></VStack>
+                        </AlertDialogContent>
+                      </AlertDialogOverlay>
+                    </AlertDialog>
+
                     <Flex justifyContent={"space-between"}>
                       <FontAwesomeIcon
                         size="lg"

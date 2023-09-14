@@ -6,12 +6,13 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import { CreateFolderButton } from "./atoms/CreateFolderButton";
 import { FolderContext } from "../FolderContext";
 import { useAuth } from "../AuthContext";
+import { ElderFolderContext } from "../ElderFolderContext";
 
 const ElderFolderList = () => {
   const { auth } = useAuth();
   const { fresher } = useContext(FresherContext);
   const { activeFolderId, setActiveFolderId } = useContext(FolderContext);
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [elderFolders, setElderFolders] = useState<Folder[]>([]);
 
   const getFresherFolders = async (token: string) => {
     const response = await fetch(
@@ -25,7 +26,7 @@ const ElderFolderList = () => {
       }
     );
     const responseData = await response.json();
-    setFolders(responseData);
+    setElderFolders(responseData);
   };
 
   const handleFolderClick = (folder: Folder) => {
@@ -37,12 +38,12 @@ const ElderFolderList = () => {
 
   return (
     <Flex direction="column" bg="white" w={120} roundedLeft={"md"}>
-      {folders.length === 0 && (
+      {elderFolders.length === 0 && (
         <Box paddingTop={4} textAlign={"center"}>
           <p>フォルダーがありません</p>
         </Box>
       )}
-      {folders.map((folder) => (
+      {elderFolders.map((folder) => (
         <Button
           rounded="none"
           key={folder.title}

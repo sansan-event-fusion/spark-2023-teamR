@@ -19,6 +19,7 @@ import { useContext, useState } from "react";
 import { FolderContext } from "../../FolderContext";
 import { accessPointURL } from "../../api/accessPoint";
 import { useAuth } from "../../AuthContext";
+import { FresherContext } from "../../fresherContext";
 
 const CreateFolderButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,8 @@ const CreateFolderButton = () => {
   const [vision, setVision] = useState("");
   const [error, setError] = useState("");
 
-  const { user, auth } = useAuth();
+  const { auth } = useAuth();
+  const { fresher } = useContext(FresherContext);
   const { folders, setFolders, setActiveFolderId } = useContext(FolderContext);
 
   const handleSubmit = async () => {
@@ -40,7 +42,7 @@ const CreateFolderButton = () => {
         tasks: [],
       };
       const postFolderContents = {
-        receiver_id: user.id,
+        receiver_id: fresher.id,
         title: title,
         vision: vision,
         tasks: [],

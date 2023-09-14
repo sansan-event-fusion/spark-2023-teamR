@@ -16,6 +16,7 @@ from .serializers import (
     SignUpSerializer,
     TaskSerializer,
     UserInfoSerializer,
+    RelationCreateSerializer,
 )
 
 
@@ -80,7 +81,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # user が指定したタスクにコメントを残す。
-        self.request.user = self.request.user
         serializer = CommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         comment = serializer.save(sender_id=request.user)
@@ -195,3 +195,16 @@ def check_token(request):
     user = request.user
     user_serializer = UserInfoSerializer(user)
     return Response(user_serializer.data, status=status.HTTP_200_OK)
+
+
+# relation に関する API の viewset
+class RelationViewSet(viewsets.ModelViewSet):
+    queryset = Relation.objects.all()
+    serializer_class = RelationCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = RelationCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        relation = serializer.save(boss_id=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

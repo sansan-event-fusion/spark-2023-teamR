@@ -134,3 +134,9 @@ class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         exclude = ("password",)
+
+
+class RelationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Relation
+        fields = ("subordinate_id",)

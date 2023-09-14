@@ -7,6 +7,7 @@ from .views import (
     CommentViewSet,
     TaskViewSet,
     check_token,
+    RelationViewSet,
     EmotionViewSet,
 )
 
@@ -14,6 +15,7 @@ router = DefaultRouter()
 router.register(r"task", TaskViewSet)
 router.register(r"folders", FolderViewSet)
 router.register(r"comment", CommentViewSet)
+router.register(r"relation", RelationViewSet)
 router.register(r"emotion", EmotionViewSet)
 
 urlpatterns = [

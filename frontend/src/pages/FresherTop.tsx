@@ -8,6 +8,7 @@ import { FresherProfile } from "../component/fresher_profile/FresherProfile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChildReaching } from "@fortawesome/free-solid-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
+import { TaskContextProvider } from "../TaskContext";
 import { useAuth } from "../AuthContext";
 
 const FresherTop = () => {
@@ -36,8 +37,10 @@ const FresherTop = () => {
           rounded={"md"}
         >
           <FolderContextProvider>
-            <FolderList />
-            <TaskList />
+            <TaskContextProvider>
+              <FolderList />
+              <TaskList />
+            </TaskContextProvider>
           </FolderContextProvider>
         </Flex>
       </VStack>

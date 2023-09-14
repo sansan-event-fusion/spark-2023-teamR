@@ -16,21 +16,25 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, Icon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
-import { Folder, Folders, Task } from "../../type/Types";
+import { Task } from "../../type/Types";
+import { useContext } from "react";
+import { TaskContext } from "../../TaskContext";
+import { useAuth } from "../../AuthContext";
+import { accessPointURL } from "../../api/accessPoint";
 
 type formInputs = {
   task_name: string;
   task_content: string;
 };
 
-type Props = {
-  folder: Folder;
-  folders: Folders;
-  setFolders: React.Dispatch<React.SetStateAction<Folders>>;
-};
-
-const CreateTaskButton = ({ folder, folders, setFolders }: Props) => {
+const CreateTaskButton = ({
+  activeFolderId,
+}: {
+  activeFolderId: number | null;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user, auth } = useAuth();
+  const { tasks, setTasks } = useContext(TaskContext);
 
   const {
     handleSubmit,
@@ -39,7 +43,7 @@ const CreateTaskButton = ({ folder, folders, setFolders }: Props) => {
   } = useForm<formInputs>();
 
   const onSubmit = handleSubmit((data) => {
-    const taskId = folder.tasks.length + 1;
+    const taskId = tasks.length + 1;
     const newTask: Task = {
       id: taskId,
       title: data.task_name,
@@ -47,18 +51,45 @@ const CreateTaskButton = ({ folder, folders, setFolders }: Props) => {
       status: "todo",
     };
 
-    data.task_name = "";
-    data.task_content = "";
-
-    const newFolder = {
-      ...folder,
-      tasks: [...folder.tasks, newTask],
+    const postTaskData = {
+      receiver_id: user.id,
+      folder_id: activeFolderId,
+      title: data.task_name,
+      content: data.task_content,
+      memo: "",
+      status: "todo",
     };
 
-    const newFolders = folders.map((folder) =>
-      folder.id === newFolder.id ? newFolder : folder
-    );
-    setFolders(newFolders);
+    const postTask = async (token: string) => {
+      const response = await fetch(`${accessPointURL}task/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify(postTaskData),
+      });
+      if (response.status === 201) {
+        const responseData = await response.json();
+        console.log("TASK POST:", responseData);
+        setTasks(
+          tasks.map((task) => {
+            if (task.id === taskId) {
+              return newTask;
+            } else {
+              return task;
+            }
+          })
+        );
+      } else {
+        console.log("POST失敗");
+      }
+    };
+
+    postTask(auth.token);
+
+    data.task_name = "";
+    data.task_content = "";
 
     onClose();
   });

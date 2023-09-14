@@ -16,6 +16,16 @@ export type Auth = {
   token: string;
   // user: User;
 };
+
+export type PostTask = {
+  receiver_id: number;
+  folder_id: number;
+  title: string;
+  content: string;
+  memo: string;
+  status: string;
+};
+
 export type User = {
   id: number;
   username: string;
@@ -51,6 +61,13 @@ export type Fresher = {
   position_id: number;
   count_emotions: number;
   count_comment: number;
+};
+
+export type Emotions = Emotion[];
+export type Emotion = {
+  id: number;
+  task_id: string;
+  emotion_type: string;
 };
 
 export type Freshers = Fresher[];

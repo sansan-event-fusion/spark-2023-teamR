@@ -10,8 +10,10 @@ import { accessPointURL } from "../api/accessPoint";
 import { Task, Tasks } from "../type/Types";
 import { DoneTaskPage } from "../pages/DoneTaskPage";
 import { NotDoneTaskPage } from "../pages/NotDoneTaskPage";
+import { useNavigate } from "react-router-dom";
 
 const TaskList = () => {
+  const navigate = useNavigate();
   const { folders, setFolders, activeFolderId } = useContext(FolderContext);
   const { user, auth } = useAuth();
   const [tasks, setTasks] = useState<Tasks>([]);
@@ -38,7 +40,8 @@ const TaskList = () => {
 
   const handleTaskClick = (task: Task) => {
     return task.status === "done" ? (
-      <DoneTaskPage task={task} />
+      // <DoneTaskPage task={task} />
+      navigate("/doneTaskPage")
     ) : (
       <NotDoneTaskPage task={task} />
     );

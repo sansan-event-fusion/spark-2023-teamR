@@ -53,4 +53,10 @@ export type Fresher = {
   count_comment: number;
 };
 
+export type Emotion = {
+  id: number;
+  task_id: string;
+  emotion_type: string;
+};
+
 export type Freshers = Fresher[];

@@ -1,17 +1,24 @@
-import { Card, Flex, Box, Heading, Text, Image } from "@chakra-ui/react";
+import { Card, Flex, Box, Heading } from "@chakra-ui/react";
 
 type Props = {
   isOpen: boolean;
-  img: string[];
-  name: string[];
-  position: string[];
+  freshers: any;
 };
 
-const smallProfile = ({ isOpen, img, name, position }: Props) => {
+const smallProfile = ({ isOpen, freshers }: Props) => {
   return (
     <>
-      {img.map((url, index) => (
+      {freshers.length === 0 ? (
+        <Box paddingTop={4} marginRight={10} textAlign={"center"}>
+          <p>新卒がいません</p>
+        </Box>
+      ) : (
+        <></>
+      )}
+
+      {freshers.map((fresher: any) => (
         <Card
+          key={fresher.id} // 必要に応じて一意のキーを設定
           maxW="md"
           mt="2"
           ml="2"
@@ -26,17 +33,9 @@ const smallProfile = ({ isOpen, img, name, position }: Props) => {
         >
           <Flex>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-              <Image
-                ml="2"
-                borderRadius="full"
-                boxSize="40px"
-                src={url}
-                alt={name[index]}
-              />
               {isOpen ? (
                 <Box>
-                  <Heading size="sm">{name[index]}</Heading>
-                  <Text>{position[index]}</Text>
+                  <Heading size="sm">{fresher.name}</Heading>
                 </Box>
               ) : (
                 <></>

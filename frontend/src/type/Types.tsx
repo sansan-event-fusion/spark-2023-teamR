@@ -38,3 +38,10 @@ export type Comment = {
 };
 
 export type Comments = Comment[];
+
+export type Fresher = {
+  id: number;
+  user_name: string;
+};
+
+export type Freshers = Fresher[];

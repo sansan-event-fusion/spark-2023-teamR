@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import SmallProfile from "./atoms/SmallProfile";
 import {
   Box,
@@ -9,21 +9,13 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
+import { FresherContext } from "../fresherContext";
 
 const LeftPlacement = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { freshers } = useContext(FresherContext);
+  console.log("freshers:", freshers);
 
-  // 仮データ
-  const freshers = {
-    img: [
-      "https://bit.ly/dan-abramov",
-      "https://bit.ly/code-beast",
-      "https://bit.ly/kent-c-dodds",
-      "https://bit.ly/ryan-florence",
-    ],
-    name: ["wakki-", "riko", "ryo", "hassu-"],
-    position: ["エンジニア", "事務", "営業", "水汲み"],
-  };
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -46,12 +38,7 @@ const LeftPlacement = () => {
           </Button>
         </Flex>
 
-        <SmallProfile
-          isOpen={isOpen}
-          img={freshers.img}
-          name={freshers.name}
-          position={freshers.position}
-        />
+        <SmallProfile isOpen={isOpen} freshers={freshers} />
       </Box>
 
       <Drawer
@@ -80,12 +67,7 @@ const LeftPlacement = () => {
               </Button>
             </Flex>
 
-            <SmallProfile
-              isOpen={isOpen}
-              img={freshers.img}
-              name={freshers.name}
-              position={freshers.position}
-            />
+            <SmallProfile isOpen={isOpen} freshers={freshers} />
           </Box>
         </DrawerContent>
       </Drawer>

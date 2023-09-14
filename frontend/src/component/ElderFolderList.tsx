@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FresherContext } from "../fresherContext";
 import { accessPointURL } from "../api/accessPoint";
 import { Folder } from "../type/Types";
@@ -6,13 +6,12 @@ import { Box, Button, Flex } from "@chakra-ui/react";
 import { CreateFolderButton } from "./atoms/CreateFolderButton";
 import { FolderContext } from "../FolderContext";
 import { useAuth } from "../AuthContext";
-import { ElderFolderContext } from "../ElderFolderContext";
 
 const ElderFolderList = () => {
   const { auth } = useAuth();
   const { fresher } = useContext(FresherContext);
+  const { folders, setFolders } = useContext(FolderContext);
   const { activeFolderId, setActiveFolderId } = useContext(FolderContext);
-  const [elderFolders, setElderFolders] = useState<Folder[]>([]);
 
   const getFresherFolders = async (token: string) => {
     const response = await fetch(
@@ -26,24 +25,28 @@ const ElderFolderList = () => {
       }
     );
     const responseData = await response.json();
-    setElderFolders(responseData);
+    setFolders(responseData);
+    setActiveFolderId(responseData[0].id);
   };
 
   const handleFolderClick = (folder: Folder) => {
     console.log(folder);
-    setActiveFolderId(folder.id);
   };
 
-  getFresherFolders(auth.token);
+  useEffect(() => {
+    if (auth.token !== undefined) {
+      getFresherFolders(auth.token);
+    }
+  }, [auth.token, fresher.id]);
 
   return (
     <Flex direction="column" bg="white" w={120} roundedLeft={"md"}>
-      {elderFolders.length === 0 && (
+      {folders.length === 0 && (
         <Box paddingTop={4} textAlign={"center"}>
           <p>フォルダーがありません</p>
         </Box>
       )}
-      {elderFolders.map((folder) => (
+      {folders.map((folder) => (
         <Button
           rounded="none"
           key={folder.title}

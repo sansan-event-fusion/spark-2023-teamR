@@ -17,33 +17,7 @@ const FolderContext = createContext<{
 
 const FolderContextProvider = ({ children }: { children: ReactNode }) => {
   const [activeFolderId, setActiveFolderId] = useState<number | null>(null);
-  const [folders, setFolders] = useState<Folders>([
-    {
-      id: 1,
-      title: "フォルダ1",
-      vision: "ビジョン1",
-      tasks: [
-        {
-          id: 1,
-          title: "タスク1",
-          content: "タスク1の内容",
-          status: "todo",
-        },
-        {
-          id: 2,
-          title: "タスク2",
-          content: "タスク2の内容",
-          status: "doing",
-        },
-        {
-          id: 3,
-          title: "タスク3",
-          content: "タスク3の内容",
-          status: "done",
-        },
-      ],
-    },
-  ]);
+  const [folders, setFolders] = useState<Folders>([]);
 
   const { auth } = useAuth();
 

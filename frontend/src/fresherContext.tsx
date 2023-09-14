@@ -8,11 +8,15 @@ const FresherContext = createContext<{
   setActiveFresher: React.Dispatch<React.SetStateAction<Fresher | null>>;
   freshers: Freshers;
   setFreshers: React.Dispatch<React.SetStateAction<Freshers>>;
+  fresher: Fresher;
+  setFresher: React.Dispatch<React.SetStateAction<Fresher>>;
 }>({
   activeFresher: null,
   setActiveFresher: () => null,
   freshers: [],
   setFreshers: () => null,
+  fresher: {} as Fresher,
+  setFresher: () => null,
 });
 
 const FresherContextProvider = ({
@@ -26,7 +30,6 @@ const FresherContextProvider = ({
   const { auth } = useAuth();
 
   const getFreshers = async (token: string) => {
-    console.log("freshertoken", token);
     const response = await fetch(`${accessPointURL}get_subordinates/`, {
       method: "GET",
       headers: {
@@ -37,6 +40,7 @@ const FresherContextProvider = ({
     const responseData = await response.json();
     if (response.status === 200) {
       console.log("fresherGET:", responseData);
+      setFreshers(responseData);
       return responseData;
     } else {
       console.log("fresherGET失敗", responseData);
@@ -44,16 +48,24 @@ const FresherContextProvider = ({
     }
   };
 
+  const [fresher, setFresher] = useState<Fresher>({} as Fresher);
+
   useEffect(() => {
     if (auth.token !== undefined) {
-      console.log("Fresher前auth.token:", auth.token);
       getFreshers(auth.token);
     }
   }, [auth.token]);
 
   return (
     <FresherContext.Provider
-      value={{ activeFresher, setActiveFresher, freshers, setFreshers }}
+      value={{
+        activeFresher,
+        setActiveFresher,
+        freshers,
+        setFreshers,
+        fresher,
+        setFresher,
+      }}
     >
       {children}
     </FresherContext.Provider>

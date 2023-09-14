@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Card,
@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useAuth } from "../../AuthContext";
 import { defaultIcon } from "../../style/defaultIcon";
+import { FresherContext } from "../../FresherContext";
 
 type FresherData = {
   img: string;
@@ -21,7 +22,7 @@ type FresherData = {
 };
 
 const FresherProfile = () => {
-  const { user } = useAuth();
+  const { fresher } = useContext(FresherContext);
   return (
     <Card padding="6">
       <HStack
@@ -39,7 +40,7 @@ const FresherProfile = () => {
           />
           <VStack>
             <Box ml="20px" paddingX={6} margin={0}>
-              <Text fontSize="2xl">{user.username}</Text>
+              <Text fontSize="2xl">{fresher.username}</Text>
             </Box>
           </VStack>
         </HStack>
@@ -50,7 +51,7 @@ const FresherProfile = () => {
               <Text align="right">いいね数</Text>
             </Box>
             <Text fontSize={"2xl"} ml={"8"} align="right">
-              {user.count_emotions}
+              {fresher.count_emotions}
             </Text>
           </HStack>
           <HStack>
@@ -58,7 +59,7 @@ const FresherProfile = () => {
               <Text align="right">コメント数</Text>
             </Box>
             <Text fontSize={"2xl"} ml={"8"}>
-              {user.count_comment}
+              {fresher.count_comment}
             </Text>
           </HStack>
         </VStack>

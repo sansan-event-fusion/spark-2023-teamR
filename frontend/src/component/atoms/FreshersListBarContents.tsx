@@ -1,12 +1,20 @@
 import { Card, Flex, Box, Heading } from "@chakra-ui/react";
 import { Fresher, Freshers } from "../../type/Types";
+import { FresherContext } from "../../FresherContext";
+import { useContext } from "react";
 
 type Props = {
   isOpen: boolean;
-  freshers: Freshers;
 };
 
-const FreshersListBarContents = ({ isOpen, freshers }: Props) => {
+const FreshersListBarContents = ({ isOpen }: Props) => {
+  const { setFresher } = useContext(FresherContext);
+
+  const handleClick = (fresher: Fresher) => {
+    setFresher(fresher);
+  };
+
+  const { freshers } = useContext(FresherContext);
   return (
     <>
       {freshers.length === 0 && (
@@ -14,7 +22,6 @@ const FreshersListBarContents = ({ isOpen, freshers }: Props) => {
           <p>新卒がいません</p>
         </Box>
       )}
-
       {freshers.map((fresher: Fresher) => (
         <Card
           key={fresher.id} // 必要に応じて一意のキーを設定
@@ -33,8 +40,17 @@ const FreshersListBarContents = ({ isOpen, freshers }: Props) => {
           <Flex>
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
               {isOpen ? (
-                <Box>
-                  <Heading size="sm">{fresher.user_name}</Heading>
+                <Box
+                  w="100%"
+                  h="36px"
+                  display="flex"
+                  alignItems="center"
+                  paddingX={8}
+                  border={"0.5px solid"}
+                  borderColor={"gray.200"}
+                  onClick={() => handleClick(fresher)}
+                >
+                  <Heading size="sm">{fresher.username}</Heading>
                 </Box>
               ) : (
                 <></>

@@ -7,13 +7,14 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
+  VStack,
 } from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 import { FresherContext } from "../FresherContext";
 
 const FreshersListBar = () => {
-  const { freshers } = useContext(FresherContext);
-  console.log("freshers:", freshers);
+  // const { freshers } = useContext(FresherContext);
+  // console.log("freshers->:", freshers);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -33,12 +34,16 @@ const FreshersListBar = () => {
         transition="left 0.3s ease"
       >
         <Flex justifyContent="center">
-          <Button onClick={toggleSidebar} mt="2" bg="white">
-            <ChevronRightIcon />
-          </Button>
+          <VStack>
+            <Box paddingTop={2}>
+              <p>新卒</p>
+              <p>一覧</p>
+            </Box>
+            <Button onClick={toggleSidebar} bg="white" size={"lg"}>
+              <ChevronRightIcon />
+            </Button>{" "}
+          </VStack>
         </Flex>
-
-        <FreshersListBarContents isOpen={isOpen} freshers={freshers} />
       </Box>
 
       <Drawer
@@ -61,13 +66,15 @@ const FreshersListBar = () => {
             transition="left 0.3s ease"
           >
             <Flex justify="center" align="center">
-              <Box ml="auto">新卒</Box>
+              <Box ml="auto" fontSize={"2xl"} paddingY={4}>
+                新卒一覧
+              </Box>
               <Button ml="auto" onClick={toggleSidebar} mt="2" bg="white">
                 <ChevronLeftIcon />
               </Button>
             </Flex>
 
-            <FreshersListBarContents isOpen={isOpen} freshers={freshers} />
+            <FreshersListBarContents isOpen={isOpen} />
           </Box>
         </DrawerContent>
       </Drawer>

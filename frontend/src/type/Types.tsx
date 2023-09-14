@@ -41,7 +41,16 @@ export type Comments = Comment[];
 
 export type Fresher = {
   id: number;
-  user_name: string;
+  username: string;
+  email: string;
+  is_staff: boolean;
+  is_superuser: boolean;
+  date_joined: string;
+  last_login: string;
+  company_id: number;
+  position_id: number;
+  count_emotions: number;
+  count_comment: number;
 };
 
 export type Freshers = Fresher[];

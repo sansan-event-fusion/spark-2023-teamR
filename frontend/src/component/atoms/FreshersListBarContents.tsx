@@ -1,6 +1,6 @@
 import { Card, Flex, Box, Heading } from "@chakra-ui/react";
 import { Fresher } from "../../type/Types";
-import { FresherContext } from "../../FresherContext";
+import { FresherContext } from "../../fresherContext";
 import { useContext } from "react";
 
 type Props = {

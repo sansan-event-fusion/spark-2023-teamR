@@ -10,8 +10,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
-import { FresherContext } from "../FresherContext";
-
+import { FresherContext } from "../fresherContext";
 const FreshersListBar = () => {
   // const { freshers } = useContext(FresherContext);
   // console.log("freshers->:", freshers);

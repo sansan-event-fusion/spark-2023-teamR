@@ -5,7 +5,7 @@ import { FolderContextProvider } from "../FolderContext";
 import { FolderList } from "../component/FolderList";
 import FreshersListBar from "../component/FreshersListBar";
 import { useContext } from "react";
-import { FresherContext } from "../FresherContext";
+import { FresherContext } from "../fresherContext";
 
 const ElderTop = () => {
   const { fresher } = useContext(FresherContext);

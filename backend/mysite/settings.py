@@ -146,7 +146,7 @@ CORS_ORIGIN_WHITELIST = (
     "http://localhost",
     "http://localhost:3000",
     "https://main.d36fw0anlbyb42.amplifyapp.com",
-    "https://infra-amplify.d36fw0anlbyb42.amplifyapp.com/"
+    "https://infra-amplify.d36fw0anlbyb42.amplifyapp.com"
 )
 CORS_ALLOW_METHODS = [
     "DELETE",

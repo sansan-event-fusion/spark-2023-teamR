@@ -27,12 +27,30 @@ const Login = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
-  const { user, setAuth } = useAuth();
+  const { setAuth } = useAuth();
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm<formInputs>();
+
+  const getUser_Initial = async (token: string) => {
+    const response = await fetch(`${accessPointURL}check_token/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${token}`,
+      },
+    });
+    if (response.status === 401) {
+      console.log("tokenが無効です");
+    } else if (response.status === 200) {
+      const responseData = await response.json();
+      navigate(responseData.position_id === 1 ? "/fresherTop" : "/elderTop");
+    } else {
+      console.log("GET失敗");
+    }
+  };
   const onSubmit = handleSubmit(async (data) => {
     const response = await fetch(`${accessPointURL}signin/`, {
       method: "POST",
@@ -55,7 +73,7 @@ const Login = () => {
         duration: 3000,
         isClosable: true,
       });
-      navigate(user.position_id !== 1 ? "/fresherTop" : "/elderTop");
+      getUser_Initial(responseData.token);
     } else {
       const errorData = await response.json();
       console.log("POST失敗", errorData.message);

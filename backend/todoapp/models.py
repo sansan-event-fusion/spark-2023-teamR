@@ -19,7 +19,7 @@ class Position(models.Model):
     )
 
     def __str__(self):
-        return self.position
+        return f"({self.id}) self.position"
 
 
 class Company(models.Model):
@@ -27,7 +27,7 @@ class Company(models.Model):
     password = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return f"({self.id}) {self.name}"
 
     def save(self, *args, **kwargs):
         # オブジェクトがまだデータベースに保存されていない場合、パスワードをハッシュ化する
@@ -45,7 +45,7 @@ class CustomUser(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"username: {self.username}, company: {self.company_id.name}, position: {self.position_id.position}"
+        return f"({self.id}) username: {self.username}, company: {self.company_id.name}, position: {self.position_id.position}"
 
 
 class Relation(models.Model):
@@ -57,7 +57,7 @@ class Relation(models.Model):
     )
 
     def __str__(self):
-        return f"boss_id: {self.boss_id}, subordinate_id: {self.subordinate_id}"
+        return f"({self.id}) boss_id: {self.boss_id.id}, subordinate_id: {self.subordinate_id.id}"
 
 
 class StatusChoices(models.TextChoices):
@@ -85,7 +85,7 @@ class Folder(models.Model):
     finished_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"title: {self.title}, vision: {self.vision}"
+        return f"({self.id}) title: {self.title}, vision: {self.vision}"
 
 
 class Task(models.Model):
@@ -112,18 +112,22 @@ class Task(models.Model):
     finished_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"title: {self.title}, content: {self.content}"
+        return f"({self.id}) title: {self.title}, content: {self.content}"
 
 
 class Emotion(models.Model):
-    # Enum で Emotion を 6 段階にする
+    # Enum で Emotion を 10 段階にする
     class EmotionChoices(models.TextChoices):
-        EMOTION_GOOD = "good"
-        EMOTION_EXCELLENT = "excellent"
-        EMOTION_SAD = "sad"
-        EMOTION_EYES = "eyes"
-        EMOTION_CHECK = "check"
-        EMOTION_CONGRATS = "congrats"
+        EMOTION_SMILE = "smile"
+        EMOTION_SURPRISE = "surprise"
+        EMOTION_KISS = "kiss"
+        EMOTION_SQUINT = "squint"
+        EMOTION_BEAM = "beam"
+        EMOTION_GRIMACE = "grimace"
+        EMOTION_DIZZY = "dizzy"
+        EMOTION_HEARTS = "hearts"
+        EMOTION_TONGUE = "tongue"
+        EMOTION_BLANK = "blank"
 
     sender_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE)
@@ -134,7 +138,7 @@ class Emotion(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"task_id: {self.task_id}, type: {self.type}"
+        return f"({self.id}) task_id: {self.task_id}, type: {self.emotion_type}"
 
 
 class Comment(models.Model):
@@ -144,4 +148,4 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"task_id: {self.task_id}, content: {self.content}"
+        return f"({self.id}) task_id: {self.task_id}, content: {self.content}"

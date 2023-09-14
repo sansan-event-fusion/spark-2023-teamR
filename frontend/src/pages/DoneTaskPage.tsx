@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import Commenter from "../component/atoms/Commenter";
 
-import { Box, HStack, Text, useConst } from "@chakra-ui/react";
+import { Box, HStack, Text } from "@chakra-ui/react";
 import { Comments, Task, Emotions } from "../type/Types";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { FaceIcons, iconList } from "../component/likes_comments/FaceIcons";
+import { iconList } from "../component/likes_comments/FaceIcons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const DoneTaskPage = ({ task }: { task: Task }) => {
@@ -65,7 +65,7 @@ const DoneTaskPage = ({ task }: { task: Task }) => {
   }, [auth.token, task.id, task]);
 
   return (
-    <Box maxW="5xl" mx="auto" textAlign="center">
+    <Box w="360px" mx="auto" textAlign="center">
       <Text fontSize="3xl" mt="8" align={"center"} justifyContent={"center"}>
         {task.title}
       </Text>
@@ -87,7 +87,7 @@ const DoneTaskPage = ({ task }: { task: Task }) => {
         padding={"2"}
         textAlign={"left"}
       >
-        {/* <Text color="gray.500"> {taskDatas.memo}</Text> */}
+        {/* <Text color="gray.500"> {task.memo}</Text> */}
       </Box>
       <Text mb="1" mt="4" textAlign={"left"}>
         コメント

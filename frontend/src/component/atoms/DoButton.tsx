@@ -3,7 +3,7 @@ import { useAuth } from "../../AuthContext";
 import { accessPointURL } from "../../api/accessPoint";
 import { Task } from "../../type/Types";
 
-const DoButton = ({ taskId }: { taskId: Task }) => {
+const DoButton = ({ taskId }: { taskId: number }) => {
   console.log("taskId:", taskId);
   const { auth } = useAuth();
   const handleClick = async () => {

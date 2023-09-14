@@ -5,7 +5,7 @@ import { DoButton } from "../component/atoms/DoButton";
 
 const NotDoneTaskPage = ({ task }: { task: Task }) => {
   return (
-    <Box maxW="5xl" mx="auto" textAlign="center">
+    <Box w="360px" mx="auto" textAlign="center">
       <Text fontSize="3xl" mt="8" align={"center"} justifyContent={"center"}>
         {task.title}
       </Text>
@@ -30,11 +30,11 @@ const NotDoneTaskPage = ({ task }: { task: Task }) => {
       >
         {/* <Text color="gray.500"> {taskDatas.memo}</Text> */}
       </Box>
-      {/* {task.status === "doing" ? (
+      {task.status === "doing" ? (
         <DoneButton taskId={task.id} />
       ) : (
         <DoButton taskId={task.id} />
-      )} */}
+      )}
     </Box>
   );
 };

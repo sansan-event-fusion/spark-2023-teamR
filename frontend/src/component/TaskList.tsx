@@ -9,8 +9,11 @@ import {
   ModalContent,
   Button,
   ModalOverlay,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
 } from "@chakra-ui/react";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FolderContext } from "../FolderContext";
 import { TaskContext } from "../TaskContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,6 +24,7 @@ import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
 import { DoneTaskPage } from "../pages/DoneTaskPage";
 import { NotDoneTaskPage } from "../pages/NotDoneTaskPage";
+import { Task } from "../type/Types";
 
 const TaskList = () => {
   const { folders, activeFolderId } = useContext(FolderContext);
@@ -46,8 +50,14 @@ const TaskList = () => {
       console.log("GET失敗");
     }
   };
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const leastDestructiveRef = useRef(null);
+  const [selectedItem, setSelectedItem] = useState<Task | null>(null);
+  const onOpen = (task: Task) => {
+    setSelectedItem(task);
+  };
+  const onClose = () => {
+    setSelectedItem(null);
+  };
 
   useEffect(() => {
     if (auth.token !== undefined && activeFolderId !== null) {
@@ -94,47 +104,53 @@ const TaskList = () => {
                         ? { bg: "gray.300" }
                         : { opacity: 0.8 }
                     }
-                    onClick={onOpen}
+                    onClick={() => onOpen(task)}
                   >
-                    <Modal isOpen={isOpen} onClose={onClose}>
-                      <ModalOverlay />
-                      <ModalContent padding={4}>
-                        <ModalBody>
+                    <AlertDialog
+                      isOpen={task === selectedItem}
+                      onClose={onClose}
+                      leastDestructiveRef={leastDestructiveRef}
+                      autoFocus={false}
+                      isCentered
+                    >
+                      <AlertDialogOverlay>
+                        <AlertDialogContent>
                           {task.status === "done" ? (
                             <DoneTaskPage task={task} />
                           ) : (
                             <NotDoneTaskPage task={task} />
                           )}
-                        </ModalBody>
 
-                        <VStack
-                          marginTop={4}
-                          justifyContent={"center"}
-                          alignItems={"center"}
-                          textAlign={"center"}
-                        >
-                          {task.status === "doing" ? (
-                            <Text fontSize="3xl" as="b" color={"orange"}>
-                              取り組み中
-                            </Text>
-                          ) : task.status === "done" ? (
-                            <Text fontSize="3xl" as="b" color={"blue.400"}>
-                              Done !
-                            </Text>
-                          ) : (
-                            <></>
-                          )}
-                          <Button
-                            colorScheme="gray"
-                            m={4}
-                            w="100px"
-                            onClick={onClose}
+                          <VStack
+                            marginTop={4}
+                            justifyContent={"center"}
+                            alignItems={"center"}
+                            textAlign={"center"}
                           >
-                            とじる
-                          </Button>
-                        </VStack>
-                      </ModalContent>
-                    </Modal>
+                            {task.status === "doing" ? (
+                              <Text fontSize="3xl" as="b" color={"orange"}>
+                                取り組み中
+                              </Text>
+                            ) : task.status === "done" ? (
+                              <Text fontSize="3xl" as="b" color={"blue.400"}>
+                                Done !
+                              </Text>
+                            ) : (
+                              <></>
+                            )}
+                            <Button
+                              colorScheme="gray"
+                              m={4}
+                              w="100px"
+                              onClick={onClose}
+                            >
+                              とじる
+                            </Button>
+                          </VStack>
+                        </AlertDialogContent>
+                      </AlertDialogOverlay>
+                    </AlertDialog>
+
                     <Flex justifyContent={"space-between"}>
                       <FontAwesomeIcon
                         size="lg"

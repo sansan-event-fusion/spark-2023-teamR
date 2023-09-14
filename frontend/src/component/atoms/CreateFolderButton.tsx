@@ -15,26 +15,23 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { AddIcon, Icon } from "@chakra-ui/icons";
-import { useState } from "react";
-import { Folders } from "../../type/Types";
+import { useContext, useState } from "react";
+import { FolderContext } from "../../FolderContext";
+import { accessPointURL } from "../../api/accessPoint";
+import { useAuth } from "../../AuthContext";
+import { FresherContext } from "../../fresherContext";
 
-type Props = {
-  folders: Folders;
-  setFolders: React.Dispatch<React.SetStateAction<Folders>>;
-  setActiveFolderId: React.Dispatch<React.SetStateAction<number | null>>;
-};
-
-const CreateFolderButton = ({
-  folders,
-  setFolders,
-  setActiveFolderId,
-}: Props) => {
+const CreateFolderButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [vision, setVision] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = () => {
+  const { auth } = useAuth();
+  const { fresher } = useContext(FresherContext);
+  const { folders, setFolders, setActiveFolderId } = useContext(FolderContext);
+
+  const handleSubmit = async () => {
     if (vision.trim() === "" || title.trim() === "") {
       setError("入力必須です。空白は使用できません");
     } else {
@@ -44,6 +41,26 @@ const CreateFolderButton = ({
         vision: vision,
         tasks: [],
       };
+      const postFolderContents = {
+        receiver_id: fresher.id,
+        title: title,
+        vision: vision,
+        tasks: [],
+      };
+      const response = await fetch(`${accessPointURL}folders/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${auth.token}`,
+        },
+        body: JSON.stringify(postFolderContents),
+      });
+      if (response.status === 201) {
+        console.log("POST成功");
+      } else {
+        console.log("POST失敗");
+      }
+
       setFolders([...folders, createFolderContents]);
       setActiveFolderId(createFolderContents.id);
       setTitle("");

@@ -6,6 +6,7 @@ import { FolderList } from "../component/FolderList";
 import FreshersListBar from "../component/FreshersListBar";
 import { useContext } from "react";
 import { FresherContext } from "../fresherContext";
+import { ElderFolderList } from "../component/ElderFolderList";
 
 const ElderTop = () => {
   const { fresher } = useContext(FresherContext);
@@ -32,7 +33,7 @@ const ElderTop = () => {
           rounded={"md"}
         >
           <FolderContextProvider>
-            <FolderList />
+            <ElderFolderList />
             <TaskList />
           </FolderContextProvider>
         </Flex>

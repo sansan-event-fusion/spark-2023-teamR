@@ -12,22 +12,20 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-env_root = environ.Path(__file__) - 2
-env.read_env(env_root(".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = []
-SECRET_KEY = env("SECRET_KEY")
-
+ALLOWED_HOSTS = ["mmzs8jexgn.us-east-1.awsapprunner.com"]
+SECRET_KEY = os.environ.get("SECRET_KEY")
+ALLOWED_HOSTS.append(os.environ.get("ALLOWED_HOSTS"))
 try:
     from .local_settings import *
 except ImportError:
@@ -147,6 +145,7 @@ AUTHENTICATION_BACKENDS = [
 CORS_ORIGIN_WHITELIST = (
     "http://localhost",
     "http://localhost:3000",
+    "https://main.d36fw0anlbyb42.amplifyapp.com"
 )
 CORS_ALLOW_METHODS = [
     "DELETE",

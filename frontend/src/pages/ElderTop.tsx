@@ -1,19 +1,28 @@
-import LeftPlacement from "../component/LeftPlacement";
 import { FresherProfile } from "../component/fresher_profile/FresherProfile";
 import { TaskList } from "../component/TaskList";
 import { Box, Flex, HStack, VStack } from "@chakra-ui/react";
 import { FolderContextProvider } from "../FolderContext";
-import { FolderList } from "../component/FolderList";
+import FreshersListBar from "../component/FreshersListBar";
+import { useContext } from "react";
+import { FresherContext } from "../fresherContext";
+import { ElderFolderList } from "../component/ElderFolderList";
+import { TaskContextProvider } from "../TaskContext";
 
 const ElderTop = () => {
+  const { fresher } = useContext(FresherContext);
   return (
     <HStack>
       <Box>
-        <LeftPlacement />
+        <FreshersListBar />
       </Box>
       <VStack w={"100%"} h={"100%"} marginLeft={"80px"}>
         <Box w="auto" marginTop={8} paddingY={2}>
-          <FresherProfile />
+          {/* //fresher idが1ならばfresherを渡し、それ以外ならばnullを渡す */}
+          {fresher.position_id === 1 ? (
+            <FresherProfile person={fresher} />
+          ) : (
+            <FresherProfile person={null} />
+          )}
         </Box>
         <Flex
           w={"80%"}
@@ -24,8 +33,10 @@ const ElderTop = () => {
           rounded={"md"}
         >
           <FolderContextProvider>
-            <FolderList />
-            <TaskList />
+            <TaskContextProvider>
+              <ElderFolderList />
+              <TaskList />
+            </TaskContextProvider>
           </FolderContextProvider>
         </Flex>
       </VStack>

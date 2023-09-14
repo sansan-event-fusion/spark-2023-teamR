@@ -41,13 +41,7 @@ const FolderList = () => {
         </Button>
       ))}
 
-      {user.position_id !== 1 && (
-        <CreateFolderButton
-          folders={folders}
-          setFolders={setFolders}
-          setActiveFolderId={setActiveFolderId}
-        />
-      )}
+      {/* {user.position_id !== 1 && <CreateFolderButton />} */}
     </Flex>
   );
 };

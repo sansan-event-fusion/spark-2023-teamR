@@ -1,22 +1,21 @@
 import { Card, Flex, Box, Heading } from "@chakra-ui/react";
+import { Fresher, Freshers } from "../../type/Types";
 
 type Props = {
   isOpen: boolean;
-  freshers: any;
+  freshers: Freshers;
 };
 
 const FreshersListBarContents = ({ isOpen, freshers }: Props) => {
   return (
     <>
-      {freshers.length === 0 ? (
-        <Box paddingTop={4} textAlign={"center"}>
+      {freshers.length === 0 && (
+        <Box>
           <p>新卒がいません</p>
         </Box>
-      ) : (
-        <></>
       )}
 
-      {freshers.map((fresher: any) => (
+      {freshers.map((fresher: Fresher) => (
         <Card
           key={fresher.id} // 必要に応じて一意のキーを設定
           maxW="md"
@@ -35,7 +34,7 @@ const FreshersListBarContents = ({ isOpen, freshers }: Props) => {
             <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
               {isOpen ? (
                 <Box>
-                  <Heading size="sm">{fresher.name}</Heading>
+                  <Heading size="sm">{fresher.user_name}</Heading>
                 </Box>
               ) : (
                 <></>

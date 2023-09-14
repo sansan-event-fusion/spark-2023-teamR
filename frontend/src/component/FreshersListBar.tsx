@@ -9,7 +9,7 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
-import { FresherContext } from "../fresherContext";
+import { FresherContext } from "../FresherContext";
 
 const FreshersListBar = () => {
   const { freshers } = useContext(FresherContext);

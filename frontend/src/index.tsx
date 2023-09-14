@@ -5,7 +5,7 @@ import { theme } from "./style/theme";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./Routes";
 import { AuthProvider } from "./AuthContext";
-import { FresherContextProvider } from "./fresherContext";
+import { FresherContextProvider } from "./FresherContext";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

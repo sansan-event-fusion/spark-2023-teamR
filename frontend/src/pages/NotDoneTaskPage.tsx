@@ -2,8 +2,16 @@ import { Box, Text } from "@chakra-ui/react";
 import { Task } from "../type/Types";
 import { DoneButton } from "../component/atoms/DoneButton";
 import { DoButton } from "../component/atoms/DoButton";
+import { useAuth } from "../AuthContext";
 
-const NotDoneTaskPage = ({ task }: { task: Task }) => {
+const NotDoneTaskPage = ({
+  task,
+  onClose,
+}: {
+  task: Task;
+  onClose: () => void;
+}) => {
+  const { user } = useAuth();
   return (
     <Box w="360px" mx="auto" textAlign="center">
       <Text fontSize="3xl" mt="8" align={"center"} justifyContent={"center"}>
@@ -30,10 +38,22 @@ const NotDoneTaskPage = ({ task }: { task: Task }) => {
       >
         {/* <Text color="gray.500"> {taskDatas.memo}</Text> */}
       </Box>
-      {task.status === "doing" ? (
-        <DoneButton taskId={task.id} />
+      {user.position_id === 1 ? (
+        task.status === "doing" ? (
+          <DoneButton taskId={task.id} onClose={onClose} />
+        ) : (
+          <DoButton taskId={task.id} onClose={onClose} />
+        )
       ) : (
-        <DoButton taskId={task.id} />
+        <div>
+          {task.status === "doing" ? (
+            <Text color={"orange"}>取り組み中</Text>
+          ) : task.status === "done" ? (
+            <Text color={"blue.400"}>完了</Text>
+          ) : (
+            <Text color={"gray.500"}>未着手</Text>
+          )}
+        </div>
       )}
     </Box>
   );

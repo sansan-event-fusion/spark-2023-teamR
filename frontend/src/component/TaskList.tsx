@@ -12,6 +12,7 @@ import {
   AlertDialog,
   AlertDialogOverlay,
   AlertDialogContent,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { FolderContext } from "../FolderContext";
@@ -115,10 +116,12 @@ const TaskList = () => {
                     >
                       <AlertDialogOverlay>
                         <AlertDialogContent>
+                          <ModalCloseButton />
+
                           {task.status === "done" ? (
                             <DoneTaskPage task={task} />
                           ) : (
-                            <NotDoneTaskPage task={task} />
+                            <NotDoneTaskPage task={task} onClose={onClose} />
                           )}
 
                           <VStack
@@ -126,27 +129,7 @@ const TaskList = () => {
                             justifyContent={"center"}
                             alignItems={"center"}
                             textAlign={"center"}
-                          >
-                            {task.status === "doing" ? (
-                              <Text fontSize="3xl" as="b" color={"orange"}>
-                                取り組み中
-                              </Text>
-                            ) : task.status === "done" ? (
-                              <Text fontSize="3xl" as="b" color={"blue.400"}>
-                                Done !
-                              </Text>
-                            ) : (
-                              <></>
-                            )}
-                            <Button
-                              colorScheme="gray"
-                              m={4}
-                              w="100px"
-                              onClick={onClose}
-                            >
-                              とじる
-                            </Button>
-                          </VStack>
+                          ></VStack>
                         </AlertDialogContent>
                       </AlertDialogOverlay>
                     </AlertDialog>

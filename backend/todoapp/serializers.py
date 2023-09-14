@@ -70,13 +70,19 @@ class FolderSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    sender_username = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
         fields = (
             "id",
             "task_id",
+            "sender_username",
             "content",
         )
+
+    def get_sender_username(self, obj):
+        return obj.sender_id.username
 
 
 class EmotionSerializer(serializers.ModelSerializer):

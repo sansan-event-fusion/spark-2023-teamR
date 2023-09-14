@@ -26,7 +26,7 @@ const FresherContextProvider = ({
 }) => {
   const [activeFresher, setActiveFresher] = useState<Fresher | null>(null);
   const [freshers, setFreshers] = useState<Freshers>([]);
-
+  const [fresher, setFresher] = useState<Fresher>({} as Fresher);
   const { auth } = useAuth();
 
   const getFreshers = async (token: string) => {
@@ -47,8 +47,6 @@ const FresherContextProvider = ({
       return responseData;
     }
   };
-
-  const [fresher, setFresher] = useState<Fresher>({} as Fresher);
 
   useEffect(() => {
     if (auth.token !== undefined) {

@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Center, Wrap, WrapItem } from "@chakra-ui/react";
 
-const iconList = [
+export const iconList = [
   {
     id: 1,
     icon: faFaceSmileWink,

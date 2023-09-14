@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Commenter from "../component/atoms/Commenter";
 
-import { Box, Text } from "@chakra-ui/react";
-import { Comments, Task, Emotion } from "../type/Types";
+import { Box, HStack, Text, useConst } from "@chakra-ui/react";
+import { Comments, Task, Emotions } from "../type/Types";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { FaceIcons } from "../component/likes_comments/FaceIcons";
+import { FaceIcons, iconList } from "../component/likes_comments/FaceIcons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFaceSmileWink,
@@ -22,82 +22,9 @@ import {
 
 const DoneTaskPage = ({ task }: { task: Task }) => {
   const [comments, setComments] = useState<Comments>([]);
-  const [emotions, setEmotions] = useState<Comments>([]);
+  const [emotions, setEmotions] = useState<Emotions>([]);
 
   const { auth } = useAuth();
-
-  const iconList = {
-    smile: {
-      id: 1,
-      icon: faFaceSmileWink,
-      color: "#fbd92e",
-      size: "2xl",
-      animation: "fa-bounce",
-    },
-    suprise: {
-      id: 2,
-      icon: faFaceSurprise,
-      color: "#f503f6",
-      size: "2xl",
-      animation: "fa-spin",
-    },
-    kiss: {
-      id: 3,
-      icon: faFaceKissWinkHeart,
-      color: "#fe3d7f",
-      size: "2xl",
-      animation: "fa-beat",
-    },
-    squint: {
-      id: 4,
-      icon: faFaceGrinSquintTears,
-      color: "#26a3ef",
-      size: "2xl",
-      animation: "fa-pulse",
-    },
-    beam: {
-      id: 5,
-      icon: faFaceGrinBeamSweat,
-      color: "#7bb241",
-      size: "2xl",
-      animation: "fa-bounce",
-    },
-    grimace: {
-      id: 6,
-      icon: faFaceGrimace,
-      color: "#f1a900",
-      size: "2xl",
-      animation: "fa-bounce",
-    },
-    dizzy: {
-      id: 7,
-      icon: faFaceDizzy,
-      color: "#9f9f9f",
-      size: "2xl",
-      animation: "fa-spin",
-    },
-    hearts: {
-      id: 8,
-      icon: faFaceGrinHearts,
-      color: "#ea3f79",
-      size: "2xl",
-      animation: "fa-beat",
-    },
-    tongue: {
-      id: 9,
-      icon: faFaceGrinTongueSquint,
-      color: "#5d17f6",
-      size: "2xl",
-      animation: "fa-pulse",
-    },
-    blank: {
-      id: 10,
-      icon: faFaceMehBlank,
-      color: "#ad2c27",
-      size: "2xl",
-      animation: "fa-bounce",
-    },
-  };
 
   const getComments = async (token: string, taskId: number) => {
     const response = await fetch(
@@ -199,10 +126,26 @@ const DoneTaskPage = ({ task }: { task: Task }) => {
             id={0}
           />
         ))}
-        {/* mainをpull後 ここにスタンプ表示機能追加する */}
-        {emotions.map((emotion) => (
-          <>aaa</>
-        ))}
+        <HStack>
+          {emotions.map((emotion) => (
+            <Box>
+              {iconList.map((icon) => (
+                <Box>
+                  {emotion.id === icon.id && (
+                    <Box>
+                      <FontAwesomeIcon
+                        icon={icon.icon}
+                        style={{ color: icon.color }}
+                        size={icon.size as any}
+                        className={icon.animation}
+                      />
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </Box>
+          ))}
+        </HStack>
       </Box>
     </Box>
   );

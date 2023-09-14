@@ -1,5 +1,5 @@
-import { useState } from "react";
-import SmallProfile from "./atoms/SmallProfile";
+import { useContext, useState } from "react";
+import FreshersListBarContents from "./atoms/FreshersListBarContents";
 import {
   Box,
   Button,
@@ -7,23 +7,15 @@ import {
   DrawerContent,
   DrawerOverlay,
   Flex,
+  VStack,
 } from "@chakra-ui/react";
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
+import { FresherContext } from "../fresherContext";
+const FreshersListBar = () => {
+  // const { freshers } = useContext(FresherContext);
+  // console.log("freshers->:", freshers);
 
-const LeftPlacement = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  // 仮データ
-  const freshers = {
-    img: [
-      "https://bit.ly/dan-abramov",
-      "https://bit.ly/code-beast",
-      "https://bit.ly/kent-c-dodds",
-      "https://bit.ly/ryan-florence",
-    ],
-    name: ["wakki-", "riko", "ryo", "hassu-"],
-    position: ["エンジニア", "事務", "営業", "水汲み"],
-  };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -41,17 +33,16 @@ const LeftPlacement = () => {
         transition="left 0.3s ease"
       >
         <Flex justifyContent="center">
-          <Button onClick={toggleSidebar} mt="2" bg="white">
-            <ChevronRightIcon />
-          </Button>
+          <VStack>
+            <Box paddingTop={2}>
+              <p>新卒</p>
+              <p>一覧</p>
+            </Box>
+            <Button onClick={toggleSidebar} bg="white" size={"lg"}>
+              <ChevronRightIcon />
+            </Button>{" "}
+          </VStack>
         </Flex>
-
-        <SmallProfile
-          isOpen={isOpen}
-          img={freshers.img}
-          name={freshers.name}
-          position={freshers.position}
-        />
       </Box>
 
       <Drawer
@@ -74,18 +65,15 @@ const LeftPlacement = () => {
             transition="left 0.3s ease"
           >
             <Flex justify="center" align="center">
-              <Box ml="auto">新卒</Box>
+              <Box ml="auto" fontSize={"2xl"} paddingY={4}>
+                新卒一覧
+              </Box>
               <Button ml="auto" onClick={toggleSidebar} mt="2" bg="white">
                 <ChevronLeftIcon />
               </Button>
             </Flex>
 
-            <SmallProfile
-              isOpen={isOpen}
-              img={freshers.img}
-              name={freshers.name}
-              position={freshers.position}
-            />
+            <FreshersListBarContents isOpen={isOpen} />
           </Box>
         </DrawerContent>
       </Drawer>
@@ -93,4 +81,4 @@ const LeftPlacement = () => {
   );
 };
 
-export default LeftPlacement;
+export default FreshersListBar;

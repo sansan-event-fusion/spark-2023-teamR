@@ -8,15 +8,22 @@ import { FresherProfile } from "../component/fresher_profile/FresherProfile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChildReaching } from "@fortawesome/free-solid-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../AuthContext";
 
 const FresherTop = () => {
+  const { user } = useAuth();
   return (
     <>
       <VStack w={"100%"} h={"100%"}>
         <HStack marginTop={8}>
           <FontAwesomeIcon icon={faPersonRunning} size="3x" />
           <Box w="auto" paddingY={2} paddingX={6}>
-            <FresherProfile />
+            {/* //user position idが1ならばfresherを渡し、それ以外ならばnullを渡す */}
+            {user.position_id === 1 ? (
+              <FresherProfile person={user} />
+            ) : (
+              <FresherProfile person={null} />
+            )}
           </Box>
           <FontAwesomeIcon icon={faChildReaching} size="3x" />
         </HStack>

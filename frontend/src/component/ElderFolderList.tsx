@@ -26,7 +26,6 @@ const ElderFolderList = () => {
     );
     const responseData = await response.json();
     setFolders(responseData);
-    setActiveFolderId(responseData[0].id);
   };
 
   const handleFolderClick = (folder: Folder) => {
@@ -38,7 +37,7 @@ const ElderFolderList = () => {
     if (auth.token !== undefined) {
       getFresherFolders(auth.token);
     }
-  }, [auth.token, activeFolderId]);
+  }, [auth.token, activeFolderId, fresher.id]);
 
   return (
     <Flex direction="column" bg="white" w={120} roundedLeft={"md"}>

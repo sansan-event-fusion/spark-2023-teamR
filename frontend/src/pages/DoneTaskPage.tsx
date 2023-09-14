@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Commenter from "../atoms/Commenter";
+import Commenter from "../component/atoms/Commenter";
 
 import { Box, Text } from "@chakra-ui/react";
-import { Comments, Task } from "../../type/Types";
-import { useAuth } from "../../AuthContext";
-import { accessPointURL } from "../../api/accessPoint";
+import { Comments, Task } from "../type/Types";
+import { useAuth } from "../AuthContext";
+import { accessPointURL } from "../api/accessPoint";
 
-const CheckComment = ({ task }: { task: Task }) => {
+const DoneTaskPage = ({ task }: { task: Task }) => {
   const [comments, setComments] = useState<Comments>([]);
 
   const { auth } = useAuth();
@@ -96,4 +96,4 @@ const CheckComment = ({ task }: { task: Task }) => {
   );
 };
 
-export { CheckComment };
+export { DoneTaskPage };

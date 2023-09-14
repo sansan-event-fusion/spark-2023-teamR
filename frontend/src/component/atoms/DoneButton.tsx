@@ -16,7 +16,7 @@ const DoneButton = ({ taskId }: { taskId: number }) => {
     if (response.status === 200) {
       console.log("PATCH成功", response);
     } else {
-      console.log("PATCH失敗");
+      console.log("PATCH失敗", response);
     }
   };
   return (

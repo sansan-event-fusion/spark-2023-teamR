@@ -7,18 +7,6 @@ import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
 import { FaceIcons, iconList } from "../component/likes_comments/FaceIcons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFaceSmileWink,
-  faFaceSurprise,
-  faFaceKissWinkHeart,
-  faFaceGrinSquintTears,
-  faFaceGrinBeamSweat,
-  faFaceGrimace,
-  faFaceDizzy,
-  faFaceGrinHearts,
-  faFaceGrinTongueSquint,
-  faFaceMehBlank,
-} from "@fortawesome/free-solid-svg-icons";
 
 const DoneTaskPage = ({ task }: { task: Task }) => {
   const [comments, setComments] = useState<Comments>([]);
@@ -74,7 +62,7 @@ const DoneTaskPage = ({ task }: { task: Task }) => {
     } else {
       console.log("auth.tokenがundefinedです");
     }
-  }, [auth.token, task.id]);
+  }, [auth.token, task.id, task]);
 
   return (
     <Box maxW="5xl" mx="auto" textAlign="center">

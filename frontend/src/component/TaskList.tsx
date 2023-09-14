@@ -1,4 +1,16 @@
-import { Flex, VStack, Text, Box } from "@chakra-ui/react";
+import {
+  Flex,
+  VStack,
+  Text,
+  Box,
+  Modal,
+  useDisclosure,
+  ModalBody,
+  ModalContent,
+  ModalCloseButton,
+  Button,
+  ModalOverlay,
+} from "@chakra-ui/react";
 import { useContext, useEffect } from "react";
 import { FolderContext } from "../FolderContext";
 import { TaskContext } from "../TaskContext";
@@ -8,17 +20,19 @@ import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { CreateTaskButton } from "./atoms/CreateTaskButton";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { Task, Tasks } from "../type/Types";
+import { Task, TaskType, Tasks } from "../type/Types";
 import { DoneTaskPage } from "../pages/DoneTaskPage";
 import { NotDoneTaskPage } from "../pages/NotDoneTaskPage";
 import { useNavigate } from "react-router-dom";
+import { on } from "events";
+import { DoneButton } from "./atoms/DoneButton";
+import { DoButton } from "./atoms/DoButton";
 
 const TaskList = () => {
-
   const navigate = useNavigate();
   const { folders, setFolders, activeFolderId } = useContext(FolderContext);
   const { user, auth } = useAuth();
-  const { tasks, setTasks } = useContext(TaskContext);
+  const { setTask, tasks, setTasks } = useContext(TaskContext);
 
   const getFolderIdTasks = async (token: string, folderId: number) => {
     const response = await fetch(
@@ -40,14 +54,7 @@ const TaskList = () => {
     }
   };
 
-  const handleTaskClick = (task: Task) => {
-    return task.status === "done" ? (
-      // <DoneTaskPage task={task} />
-      navigate("/doneTaskPage")
-    ) : (
-      <NotDoneTaskPage task={task} />
-    );
-  };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (auth.token !== undefined && activeFolderId !== null) {
@@ -94,8 +101,47 @@ const TaskList = () => {
                         ? { bg: "gray.300" }
                         : { opacity: 0.8 }
                     }
-                    onClick={() => handleTaskClick(task)}
+                    onClick={onOpen}
                   >
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                      <ModalOverlay />
+                      <ModalContent padding={4}>
+                        <ModalBody>
+                          {task.status === "done" ? (
+                            <DoneTaskPage task={task} />
+                          ) : (
+                            <NotDoneTaskPage task={task} />
+                          )}
+                        </ModalBody>
+
+                        <VStack
+                          marginTop={4}
+                          justifyContent={"center"}
+                          alignItems={"center"}
+                          textAlign={"center"}
+                        >
+                          {task.status === "doing" ? (
+                            <Text fontSize="3xl" as="b" color={"orange"}>
+                              取り組み中
+                            </Text>
+                          ) : task.status === "done" ? (
+                            <Text fontSize="3xl" as="b" color={"blue.400"}>
+                              Done !
+                            </Text>
+                          ) : (
+                            <></>
+                          )}
+                          <Button
+                            colorScheme="gray"
+                            m={4}
+                            w="100px"
+                            onClick={onClose}
+                          >
+                            とじる
+                          </Button>
+                        </VStack>
+                      </ModalContent>
+                    </Modal>
                     <Flex justifyContent={"space-between"}>
                       <FontAwesomeIcon
                         size="lg"

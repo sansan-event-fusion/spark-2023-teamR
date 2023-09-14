@@ -1,5 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Task } from "../type/Types";
+import { DoneButton } from "../component/atoms/DoneButton";
+import { DoButton } from "../component/atoms/DoButton";
 
 const NotDoneTaskPage = ({ task }: { task: Task }) => {
   return (
@@ -23,10 +25,16 @@ const NotDoneTaskPage = ({ task }: { task: Task }) => {
         borderRadius="lg"
         overflow="hidden"
         padding={"2"}
+        marginBottom={4}
         textAlign={"left"}
       >
         {/* <Text color="gray.500"> {taskDatas.memo}</Text> */}
       </Box>
+      {/* {task.status === "doing" ? (
+        <DoneButton taskId={task.id} />
+      ) : (
+        <DoButton taskId={task.id} />
+      )} */}
     </Box>
   );
 };

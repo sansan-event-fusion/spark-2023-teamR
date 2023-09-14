@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { FresherContext } from "../fresherContext";
 import { accessPointURL } from "../api/accessPoint";
 import { Folder } from "../type/Types";
@@ -26,18 +26,18 @@ const ElderFolderList = () => {
     );
     const responseData = await response.json();
     setFolders(responseData);
-    setActiveFolderId(responseData[0].id);
   };
 
   const handleFolderClick = (folder: Folder) => {
     console.log(folder);
+    setActiveFolderId(folder.id);
   };
 
   useEffect(() => {
     if (auth.token !== undefined) {
       getFresherFolders(auth.token);
     }
-  }, [auth.token, fresher.id]);
+  }, [auth.token, activeFolderId, fresher.id]);
 
   return (
     <Flex direction="column" bg="white" w={120} roundedLeft={"md"}>

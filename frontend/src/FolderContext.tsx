@@ -52,7 +52,12 @@ const FolderContextProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <FolderContext.Provider
-      value={{ activeFolderId, setActiveFolderId, folders, setFolders }}
+      value={{
+        activeFolderId,
+        setActiveFolderId,
+        folders,
+        setFolders,
+      }}
     >
       {children}
     </FolderContext.Provider>

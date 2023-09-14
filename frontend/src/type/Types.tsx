@@ -16,6 +16,16 @@ export type Auth = {
   token: string;
   // user: User;
 };
+
+export type PostTask = {
+  receiver_id: number;
+  folder_id: number;
+  title: string;
+  content: string;
+  memo: string;
+  status: string;
+};
+
 export type User = {
   id: number;
   username: string;

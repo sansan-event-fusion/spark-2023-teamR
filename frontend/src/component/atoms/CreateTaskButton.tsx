@@ -48,6 +48,7 @@ const CreateTaskButton = ({
       id: taskId,
       title: data.task_name,
       content: data.task_content,
+      memo: data.task_name,
       status: "todo",
     };
 
@@ -71,7 +72,6 @@ const CreateTaskButton = ({
       });
       if (response.status === 201) {
         const responseData = await response.json();
-        console.log("TASK POST:", responseData);
         setTasks(
           tasks.map((task) => {
             if (task.id === taskId) {

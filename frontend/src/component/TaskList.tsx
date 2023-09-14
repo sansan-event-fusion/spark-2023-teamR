@@ -3,12 +3,6 @@ import {
   VStack,
   Text,
   Box,
-  Modal,
-  useDisclosure,
-  ModalBody,
-  ModalContent,
-  Button,
-  ModalOverlay,
   AlertDialog,
   AlertDialogOverlay,
   AlertDialogContent,
@@ -45,7 +39,6 @@ const TaskList = () => {
     );
     if (response.status === 200) {
       const responseData = await response.json();
-      console.log("TASK GET:", responseData);
       setTasks(responseData);
     } else {
       console.log("GET失敗");
@@ -58,11 +51,15 @@ const TaskList = () => {
   };
   const onClose = () => {
     setSelectedItem(null);
+    if (auth.token !== undefined && activeFolderId !== null) {
+      getFolderIdTasks(auth.token, activeFolderId!);
+    } else {
+      console.log("auth.tokenがundefinedです");
+    }
   };
 
   useEffect(() => {
     if (auth.token !== undefined && activeFolderId !== null) {
-      console.log("auth.token:", auth.token);
       getFolderIdTasks(auth.token, activeFolderId!);
     } else {
       console.log("auth.tokenがundefinedです");

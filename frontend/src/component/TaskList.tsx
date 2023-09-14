@@ -7,7 +7,6 @@ import {
   useDisclosure,
   ModalBody,
   ModalContent,
-  ModalCloseButton,
   Button,
   ModalOverlay,
 } from "@chakra-ui/react";
@@ -20,19 +19,13 @@ import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { CreateTaskButton } from "./atoms/CreateTaskButton";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { Task, TaskType, Tasks } from "../type/Types";
 import { DoneTaskPage } from "../pages/DoneTaskPage";
 import { NotDoneTaskPage } from "../pages/NotDoneTaskPage";
-import { useNavigate } from "react-router-dom";
-import { on } from "events";
-import { DoneButton } from "./atoms/DoneButton";
-import { DoButton } from "./atoms/DoButton";
 
 const TaskList = () => {
-  const navigate = useNavigate();
-  const { folders, setFolders, activeFolderId } = useContext(FolderContext);
+  const { folders, activeFolderId } = useContext(FolderContext);
   const { user, auth } = useAuth();
-  const { setTask, tasks, setTasks } = useContext(TaskContext);
+  const { tasks, setTasks } = useContext(TaskContext);
 
   const getFolderIdTasks = async (token: string, folderId: number) => {
     const response = await fetch(

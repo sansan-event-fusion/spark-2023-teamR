@@ -5,11 +5,11 @@ type Props = {
   freshers: any;
 };
 
-const smallProfile = ({ isOpen, freshers }: Props) => {
+const FreshersListBarContents = ({ isOpen, freshers }: Props) => {
   return (
     <>
       {freshers.length === 0 ? (
-        <Box paddingTop={4} marginRight={10} textAlign={"center"}>
+        <Box paddingTop={4} textAlign={"center"}>
           <p>新卒がいません</p>
         </Box>
       ) : (
@@ -48,4 +48,4 @@ const smallProfile = ({ isOpen, freshers }: Props) => {
   );
 };
 
-export default smallProfile;
+export default FreshersListBarContents;

@@ -1,15 +1,16 @@
-import LeftPlacement from "../component/LeftPlacement";
+import LeftPlacement from "../component/FreshersListBar";
 import { FresherProfile } from "../component/fresher_profile/FresherProfile";
 import { TaskList } from "../component/TaskList";
 import { Box, Flex, HStack, VStack } from "@chakra-ui/react";
 import { FolderContextProvider } from "../FolderContext";
 import { FolderList } from "../component/FolderList";
+import FreshersListBar from "../component/FreshersListBar";
 
 const ElderTop = () => {
   return (
     <HStack>
       <Box>
-        <LeftPlacement />
+        <FreshersListBar />
       </Box>
       <VStack w={"100%"} h={"100%"} marginLeft={"80px"}>
         <Box w="auto" marginTop={8} paddingY={2}>

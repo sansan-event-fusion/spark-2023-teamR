@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import SmallProfile from "./atoms/SmallProfile";
+import FreshersListBarContents from "./atoms/FreshersListBarContents";
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
 import { ChevronRightIcon, ChevronLeftIcon } from "@chakra-ui/icons";
 import { FresherContext } from "../fresherContext";
 
-const LeftPlacement = () => {
+const FreshersListBar = () => {
   const { freshers } = useContext(FresherContext);
   console.log("freshers:", freshers);
 
@@ -38,7 +38,7 @@ const LeftPlacement = () => {
           </Button>
         </Flex>
 
-        <SmallProfile isOpen={isOpen} freshers={freshers} />
+        <FreshersListBarContents isOpen={isOpen} freshers={freshers} />
       </Box>
 
       <Drawer
@@ -67,7 +67,7 @@ const LeftPlacement = () => {
               </Button>
             </Flex>
 
-            <SmallProfile isOpen={isOpen} freshers={freshers} />
+            <FreshersListBarContents isOpen={isOpen} freshers={freshers} />
           </Box>
         </DrawerContent>
       </Drawer>
@@ -75,4 +75,4 @@ const LeftPlacement = () => {
   );
 };
 
-export default LeftPlacement;
+export default FreshersListBar;

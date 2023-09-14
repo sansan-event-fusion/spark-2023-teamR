@@ -107,6 +107,7 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = (
+            "id",
             "receiver_id",
             "folder_id",
             "title",

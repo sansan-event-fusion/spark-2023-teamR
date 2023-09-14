@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router-dom";
 import { router } from "./Routes";
 import { AuthProvider } from "./AuthContext";
 import { FresherContextProvider } from "./fresherContext";
+import { TaskContextProvider } from "./TaskContext";
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
@@ -14,7 +15,9 @@ root.render(
     <ChakraProvider theme={theme}>
       <AuthProvider>
         <FresherContextProvider>
-          <RouterProvider router={router} />
+          <TaskContextProvider>
+            <RouterProvider router={router} />
+          </TaskContextProvider>
         </FresherContextProvider>
       </AuthProvider>
     </ChakraProvider>

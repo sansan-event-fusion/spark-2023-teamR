@@ -1,8 +1,15 @@
 import { Button } from "@chakra-ui/react";
 import { useAuth } from "../../AuthContext";
 import { accessPointURL } from "../../api/accessPoint";
+import { on } from "events";
 
-const DoneButton = ({ taskId }: { taskId: number }) => {
+const DoneButton = ({
+  taskId,
+  onClose,
+}: {
+  taskId: number;
+  onClose: () => void;
+}) => {
   const { auth } = useAuth();
   const handleClick = async () => {
     const response = await fetch(`${accessPointURL}task/${taskId}/`, {
@@ -15,8 +22,9 @@ const DoneButton = ({ taskId }: { taskId: number }) => {
     });
     if (response.status === 200) {
       console.log("PATCH成功", response);
+      onClose();
     } else {
-      console.log("PATCH失敗");
+      console.log("PATCH失敗", response);
     }
   };
   return (

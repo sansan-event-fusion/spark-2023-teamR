@@ -8,8 +8,9 @@ import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { CreateTaskButton } from "./atoms/CreateTaskButton";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { Task } from "../type/Types";
-import { CheckComment } from "./fresher_profile/CheckComment";
+import { Task, Tasks } from "../type/Types";
+import { DoneTaskPage } from "../pages/DoneTaskPage";
+import { NotDoneTaskPage } from "../pages/NotDoneTaskPage";
 
 const TaskList = () => {
   const { folders, activeFolderId } = useContext(FolderContext);
@@ -37,8 +38,11 @@ const TaskList = () => {
   };
 
   const handleTaskClick = (task: Task) => {
-    console.log(task);
-    return <CheckComment task={task} />;
+    return task.status === "done" ? (
+      <DoneTaskPage task={task} />
+    ) : (
+      <NotDoneTaskPage task={task} />
+    );
   };
 
   useEffect(() => {
@@ -66,6 +70,7 @@ const TaskList = () => {
                 )}
                 {tasks.map((task) => (
                   <Box
+                    as="button"
                     key={task.id}
                     rounded="lg"
                     border="1px solid gray.300"
@@ -79,6 +84,11 @@ const TaskList = () => {
                         : task.status === "doing"
                         ? "yellow.200"
                         : "blue.400"
+                    }
+                    _hover={
+                      task.status === "todo"
+                        ? { bg: "gray.300" }
+                        : { opacity: 0.8 }
                     }
                     onClick={() => handleTaskClick(task)}
                   >

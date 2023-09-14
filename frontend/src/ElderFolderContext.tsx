@@ -48,7 +48,7 @@ const ElderFolderContextProvider = ({
     if (auth.token !== undefined) {
       getElderFolder({ token: auth.token, fresherId: fresher.id });
     }
-  }, [auth.token, fresher.id]);
+  }, [auth.token, fresher.id, elderFolders]);
 
   return (
     <ElderFolderContext.Provider

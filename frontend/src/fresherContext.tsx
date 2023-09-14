@@ -26,6 +26,8 @@ const FresherContextProvider = ({
   const { auth } = useAuth();
 
   const getFreshers = async (token: string) => {
+    console.log("---------------------------------------");
+    console.log("freshertoken", token);
     const response = await fetch(`${accessPointURL}get_subordinates/`, {
       method: "GET",
       headers: {
@@ -35,17 +37,17 @@ const FresherContextProvider = ({
     });
     const responseData = await response.json();
     if (responseData.status === 200) {
-      console.log("GET成功:", responseData);
+      console.log("fresherGET:", responseData);
       return responseData;
     } else {
-      console.log("GET失敗");
-      console.log("responseData:", responseData);
+      console.log("fresherGET失敗", responseData);
+      return responseData;
     }
   };
 
   useEffect(() => {
     if (auth.token !== undefined) {
-      console.log("auth.token:", auth.token);
+      console.log("Fresher前auth.token:", auth.token);
       getFreshers(auth.token);
     }
   }, [auth.token]);

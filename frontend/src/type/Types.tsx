@@ -29,3 +29,12 @@ export type User = {
   count_emotions: number;
   count_comment: number;
 };
+
+export type Comment = {
+  id: number;
+  user_name: string;
+  position: string;
+  content: string;
+};
+
+export type Comments = Comment[];

@@ -7,7 +7,8 @@ import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { CreateTaskButton } from "./atoms/CreateTaskButton";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { Tasks } from "../type/Types";
+import { Task, Tasks } from "../type/Types";
+import { CheckComment } from "./fresher_profile/CheckComment";
 
 const TaskList = () => {
   const { folders, setFolders, activeFolderId } = useContext(FolderContext);
@@ -32,6 +33,11 @@ const TaskList = () => {
     } else {
       console.log("GET失敗");
     }
+  };
+
+  const handleTaskClick = (task: Task) => {
+    console.log(task);
+    return <CheckComment task={task} />;
   };
 
   useEffect(() => {
@@ -74,6 +80,7 @@ const TaskList = () => {
                         ? "yellow.200"
                         : "blue.400"
                     }
+                    onClick={() => handleTaskClick(task)}
                   >
                     <Flex justifyContent={"space-between"}>
                       <FontAwesomeIcon

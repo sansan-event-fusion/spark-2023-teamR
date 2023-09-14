@@ -1,19 +1,14 @@
 import { Box, Text, HStack } from "@chakra-ui/react";
 import React from "react";
+import { Comment } from "../../type/Types";
 
-type Props = {
-  name: string;
-  potision: string;
-  content: string;
-};
-
-function Commenter({ name, potision, content }: Props) {
+const Commenter = ({ user_name, position, content }: Comment) => {
   return (
     <Box marginX="4" marginY="2">
       <HStack spacing={"2"}>
-        <Text fontSize="xl">{name}</Text>
+        <Text fontSize="xl">{user_name}</Text>
         <Text fontSize="md" textColor="gray.400">
-          {potision}
+          {position}
         </Text>
       </HStack>
       <Box padding={"2"} marginX="4">
@@ -21,6 +16,6 @@ function Commenter({ name, potision, content }: Props) {
       </Box>
     </Box>
   );
-}
+};
 
 export default Commenter;

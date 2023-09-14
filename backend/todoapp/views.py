@@ -81,7 +81,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         # user が指定したタスクにコメントを残す。
-        self.request.user = self.request.user
         serializer = CommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         comment = serializer.save(sender_id=request.user)

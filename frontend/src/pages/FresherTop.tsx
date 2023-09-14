@@ -37,8 +37,8 @@ const FresherTop = () => {
           rounded={"md"}
         >
           <FolderContextProvider>
-            <FolderList />
             <TaskContextProvider>
+              <FolderList />
               <TaskList />
             </TaskContextProvider>
           </FolderContextProvider>

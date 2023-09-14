@@ -8,6 +8,7 @@ import { FresherProfile } from "../component/fresher_profile/FresherProfile";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChildReaching } from "@fortawesome/free-solid-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
+import { TaskContextProvider } from "../TaskContext";
 
 const FresherTop = () => {
   return (
@@ -30,7 +31,9 @@ const FresherTop = () => {
         >
           <FolderContextProvider>
             <FolderList />
-            <TaskList />
+            <TaskContextProvider>
+              <TaskList />
+            </TaskContextProvider>
           </FolderContextProvider>
         </Flex>
       </VStack>

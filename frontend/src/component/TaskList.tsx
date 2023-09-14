@@ -1,19 +1,20 @@
 import { Flex, VStack, Text, Box } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { FolderContext } from "../FolderContext";
+import { TaskContext } from "../TaskContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
 import { CreateTaskButton } from "./atoms/CreateTaskButton";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
-import { Task, Tasks } from "../type/Types";
+import { Task } from "../type/Types";
 import { CheckComment } from "./fresher_profile/CheckComment";
 
 const TaskList = () => {
-  const { folders, setFolders, activeFolderId } = useContext(FolderContext);
+  const { folders, activeFolderId } = useContext(FolderContext);
   const { user, auth } = useAuth();
-  const [tasks, setTasks] = useState<Tasks>([]);
+  const { tasks, setTasks } = useContext(TaskContext);
 
   const getFolderIdTasks = async (token: string, folderId: number) => {
     const response = await fetch(
@@ -48,7 +49,6 @@ const TaskList = () => {
       console.log("auth.tokenがundefinedです");
     }
   }, [auth.token, activeFolderId]);
-
   return (
     <Box bg="blue.100" w="100%" minH={"70vh"} paddingY={6} roundedRight={"md"}>
       {folders.map((folder) => (
@@ -108,11 +108,7 @@ const TaskList = () => {
                 ))}
 
                 {user.position_id !== 1 && (
-                  <CreateTaskButton
-                    folder={folder}
-                    folders={folders}
-                    setFolders={setFolders}
-                  />
+                  <CreateTaskButton activeFolderId={activeFolderId} />
                 )}
               </VStack>
             </Box>

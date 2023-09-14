@@ -4,6 +4,7 @@ import { TaskList } from "../component/TaskList";
 import { Box, Flex, HStack, VStack } from "@chakra-ui/react";
 import { FolderContextProvider } from "../FolderContext";
 import { FolderList } from "../component/FolderList";
+import { TaskContextProvider } from "../TaskContext";
 
 const ElderTop = () => {
   return (
@@ -24,8 +25,11 @@ const ElderTop = () => {
           rounded={"md"}
         >
           <FolderContextProvider>
-            <FolderList />
-            <TaskList />
+            <TaskContextProvider>
+              <FolderList />
+
+              <TaskList />
+            </TaskContextProvider>
           </FolderContextProvider>
         </Flex>
       </VStack>

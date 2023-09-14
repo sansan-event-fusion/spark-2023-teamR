@@ -27,7 +27,6 @@ const ElderTop = () => {
           <FolderContextProvider>
             <TaskContextProvider>
               <FolderList />
-
               <TaskList />
             </TaskContextProvider>
           </FolderContextProvider>

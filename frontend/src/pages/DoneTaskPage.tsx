@@ -1,13 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Commenter from "../component/atoms/Commenter";
 
-import { Box, Text } from "@chakra-ui/react";
-import { Comments, Task } from "../type/Types";
+import { Box, HStack, Text, useConst } from "@chakra-ui/react";
+import { Comments, Task, Emotions } from "../type/Types";
 import { useAuth } from "../AuthContext";
 import { accessPointURL } from "../api/accessPoint";
+import { FaceIcons, iconList } from "../component/likes_comments/FaceIcons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFaceSmileWink,
+  faFaceSurprise,
+  faFaceKissWinkHeart,
+  faFaceGrinSquintTears,
+  faFaceGrinBeamSweat,
+  faFaceGrimace,
+  faFaceDizzy,
+  faFaceGrinHearts,
+  faFaceGrinTongueSquint,
+  faFaceMehBlank,
+} from "@fortawesome/free-solid-svg-icons";
 
 const DoneTaskPage = ({ task }: { task: Task }) => {
   const [comments, setComments] = useState<Comments>([]);
+  const [emotions, setEmotions] = useState<Emotions>([]);
 
   const { auth } = useAuth();
 
@@ -31,10 +46,31 @@ const DoneTaskPage = ({ task }: { task: Task }) => {
     }
   };
 
+  const getEmotions = async (token: string, taskId: number) => {
+    const response = await fetch(
+      `${accessPointURL}emotion/?task_id=${taskId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      }
+    );
+    if (response.status === 200) {
+      const responseData = await response.json();
+      console.log("emotion GET:", responseData);
+      setEmotions(responseData);
+    } else {
+      console.log("comment GET 失敗");
+    }
+  };
+
   useEffect(() => {
     if (auth.token !== undefined) {
       console.log("auth.token:", auth.token);
       getComments(auth.token, task.id);
+      getEmotions(auth.token, task.id);
     } else {
       console.log("auth.tokenがundefinedです");
     }
@@ -90,7 +126,26 @@ const DoneTaskPage = ({ task }: { task: Task }) => {
             id={0}
           />
         ))}
-        {/* mainをpull後 ここにスタンプ表示機能追加する */}
+        <HStack>
+          {emotions.map((emotion) => (
+            <Box>
+              {iconList.map((icon) => (
+                <Box>
+                  {emotion.id === icon.id && (
+                    <Box>
+                      <FontAwesomeIcon
+                        icon={icon.icon}
+                        style={{ color: icon.color }}
+                        size={icon.size as any}
+                        className={icon.animation}
+                      />
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </Box>
+          ))}
+        </HStack>
       </Box>
     </Box>
   );

@@ -16,6 +16,7 @@ const TaskContext = createContext<TaskContextType>({
     content: "",
     status: "todo",
     id: 0,
+    memo: "",
   },
   setTask: () => null,
   tasks: [],
@@ -27,6 +28,7 @@ const TaskContextProvider = ({ children }: { children: React.ReactNode }) => {
     title: "",
     content: "",
     status: "todo",
+    memo: "",
     id: 0,
   });
   const [tasks, setTasks] = useState<Tasks>([]);

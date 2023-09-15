@@ -9,6 +9,7 @@ export type Task = {
   id: number;
   title: string;
   content: string;
+  memo: string;
   status: "todo" | "doing" | "done";
 };
 export type Tasks = Task[];
@@ -42,7 +43,7 @@ export type User = {
 
 export type Comment = {
   id: number;
-  user_name: string;
+  sender_username: string;
   position: string;
   content: string;
 };

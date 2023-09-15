@@ -13,20 +13,37 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { accessPointURL } from "../../api/accessPoint";
+import { useAuth } from "../../AuthContext";
 import { faFaceSmile } from "@fortawesome/free-regular-svg-icons";
 import { FaceIcons, Icon } from "./FaceIcons";
+import { Task } from "../../type/Types";
 
-const LikeComment = () => {
+const LikeComment = ({ task }: { task: Task }) => {
   const [value, setValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const { auth } = useAuth();
 
   //選んだ顔のスタンプを保持する
   const [selectedFace, setSelectedFace] = useState<Icon[]>([]);
 
+  const face_types = [
+    "smile",
+    "surprise",
+    "kiss",
+    "squint",
+    "beam",
+    "grimace",
+    "dizzy",
+    "hearts",
+    "tongue",
+    "blank",
+  ];
+
   const handleInputChange = (e: { target: { value: any } }) => {
     const inputValue = e.target.value;
-    console.log(inputValue);
+    // console.log(inputValue);
+    console.log(selectedFace);
     setValue(inputValue);
   };
 
@@ -34,9 +51,58 @@ const LikeComment = () => {
     setIsOpen(!isOpen);
   };
 
+  const postComment = async (token: string) => {
+    const postCommentContents = {
+      task_id: 4, //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ここベタ打ち
+      content: value,
+    };
+    const response = await fetch(`${accessPointURL}comment/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${auth.token}`,
+      },
+      body: JSON.stringify(postCommentContents),
+    });
+    if (response.status === 201) {
+      console.log("POST成功");
+    } else {
+      console.log("POST失敗");
+    }
+  };
+
+  const postEmotion = async (token: string, face_id: number) => {
+    const postEmotionContent = {
+      task_id: 4, //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ここベタ打ち
+      emotion_type: face_types[face_id - 1],
+    };
+    const response = await fetch(`${accessPointURL}emotion/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Token ${auth.token}`,
+      },
+      body: JSON.stringify(postEmotionContent),
+    });
+    if (response.status === 201) {
+      console.log(face_id);
+      console.log(face_types[face_id]);
+      console.log("Emotion POST成功");
+    } else {
+      console.log(face_id);
+
+      console.log(face_types[face_id]);
+      console.log("Emotion POST失敗");
+    }
+  };
+
   const handleSubmit = () => {
+    postComment(auth.token);
+    // postEmotion(auth.token);
+    selectedFace.map((face) => postEmotion(auth.token, face.id));
+
     setValue("");
-    setSelectedFace(selectedFace);
+    setSelectedFace([]);
   };
 
   const onClose = () => {
